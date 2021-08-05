@@ -54,7 +54,7 @@ class priceListController extends Controller
                 Storage::disk('public')->makeDirectory('price_list');
             }
 
-            $moveImage = Image::make($image)->stream();
+            $moveImage = Image::make($image)->resize(286,200)->stream();
             Storage::disk('public')->put('price_list/'.$imageName,$moveImage);
 
         } else {

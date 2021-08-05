@@ -61,7 +61,7 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
                     <b>Monthly Bill</b> <a class="float-right">{{$user->monthly_bill}}</a>
                   </li>
                 </ul>
-                <a href="{{route('admin.full_order_history',$user->id)}}" class="btn btn-outline-success btn-block"><b>Installation history</b></a>
+                <a href="{{route('admin.full_order_history',$user->id)}}" class="btn btn-outline-success btn-block"><b>Installation and Order history</b></a>
               </div>
               <!-- /.card-body -->
             </div>
@@ -72,7 +72,7 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
             <div class="card">
               <div class="card-header p-2">
                 <ul class="nav nav-pills">
-                  <li class="nav-item"><a class="nav-link active" href="#payment" data-toggle="tab">Repair and Installation History</a></li>
+                  <li class="nav-item"><a class="nav-link active" href="#payment" data-toggle="tab">Installation and Order history</a></li>
                   <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
                 </ul>
               </div><!-- /.card-header -->
@@ -111,8 +111,8 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
                           @else
 
                           @foreach($devices as $key=>$devices_data)
-
-                                {{$key+1}}. <span class="right badge badge-success">{{$devices_data->device_model}}</span>-> {{$devices_data->quantity}} Peace <br>
+                  
+                          {{$key+1}}. <span class="right badge badge-success">{{$devices_data->device_model}}</span> -> {{$devices_data->quantity}} Peace <br>
                       @endforeach
                       @endif
 

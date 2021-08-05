@@ -58,6 +58,7 @@
                       @if(count($devices) == 0)
                           <span>only for repair</span>
                           @else
+
                           @foreach($devices as $key=>$devices_data)
                           {{$key+1}}. <span class="right badge badge-success">{{$devices_data->device_model}}</span> -> {{$devices_data->quantity}} Peace <br>
                       @endforeach
@@ -288,7 +289,7 @@
     function complete_model(task_id) {
     $.ajax({
         type: 'GET',
-        url: '/safetygpstracker/admin/ajax_assign_devices/' + task_id,
+        url: '/admin/ajax_assign_devices/' + task_id,
         success: function(data) {
             if(!data.devices[0]){
                 console.log('no data');

@@ -1,0 +1,32 @@
+{
+    "name": "rupokify/sslcommerz",
+    "description": "Laravel Package for SSLCommerz Payment Gateway API",
+    "type": "library",
+    "require": {
+        "php": ">=7.1.3",
+        "guzzlehttp/guzzle": "^6.4"
+    },
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rupok Chowdhury Protik",
+            "email": "rupokify@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rupokify\\SSLCommerz\\SSLCommerzServiceProvider"
+            ],
+            "aliases": {
+                "SSLCommerz": "Rupokify\\SSLCommerz\\Facades\\SSLCommerzFacade"
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Rupokify\\SSLCommerz\\": "src/"
+        }
+    }
+}

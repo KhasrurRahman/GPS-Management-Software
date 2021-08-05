@@ -13,9 +13,11 @@
 <div class="card">
             <div class="card-header">
               <h3 class="card-title">Total Device: <span class="badge badge-secondary">{{$device->count()}}</span></h3>
-              @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+              
+                @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
                 <a href="{{route('admin.device.create')}}" type="button" class="btn-sm btn-success float-right">Add Device</a>
                 @endif
+                
             </div>
             <!-- /.card-header -->
             <div class="card-body">

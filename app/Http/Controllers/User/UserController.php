@@ -13,6 +13,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,6 +26,35 @@ class UserController extends Controller
             $orders = Assign_technician_device::where('user_id',$user_info->id)->orderBy('id','desc')->get();
             return view('frontend.user_dashboard',compact('user_info','payment','orders','package_order'));
 
+
+    }
+
+    public function changePassword(Request $request){
+
+        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+            // The passwords matches
+            Toastr::error('Your current password does not matches with the password you provided. Please try again.');
+            return redirect()->back();
+        }
+
+        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+            //Current password and new password are same
+            Toastr::error('New Password cannot be same as your current password. Please choose a different password.');
+            return redirect()->back();
+        }
+
+        $validatedData = $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|string|min:6|confirmed',
+        ]);
+
+        //Change Password
+        $user = Auth::user();
+        $user->password = bcrypt($request->get('new-password'));
+        $user->save();
+
+        Toastr::success('Password changed successfully !','success');
+        return redirect()->back()->with("success","Password changed successfully !");
 
     }
 

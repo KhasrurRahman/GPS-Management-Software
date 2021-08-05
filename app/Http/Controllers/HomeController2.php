@@ -8,6 +8,7 @@ use App\Contact_info;
 use App\Feature;
 use App\HappyClient;
 use App\HomePageModel;
+use App\page;
 use App\payment_confarmation_history;
 use App\payment_history;
 use App\Price_categaroy;
@@ -225,10 +226,11 @@ class HomeController2 extends Controller
         return view('frontend.payment_online',compact('all_user','payment'));
     }
 
-public function under_constraction()
-{
-    return view('under_constraction');
-}
+    public function single_page($id)
+    {
+        $page = Page::find($id);
+        return view('frontend.single_page',compact('page'));
+    }
 
 
 

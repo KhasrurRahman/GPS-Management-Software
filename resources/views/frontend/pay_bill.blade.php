@@ -102,7 +102,7 @@
                                 $('#message').text('User matched');
                                 $('#payment_button').show();
                                 a = document.getElementById('form');
-                                a.setAttribute("action", "/safetygpstracker/bill_payment_pay/"+data.user.id);
+                                a.setAttribute("action", "/bill_payment_pay/"+data.user.id);
                                 document.getElementById('user_id').value = data.user.id;
                                 document.getElementById('monthly_bill').value = data.user.monthly_bill;
                                 $("#show_bill").empty();

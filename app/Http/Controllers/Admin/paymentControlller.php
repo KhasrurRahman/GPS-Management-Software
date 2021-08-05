@@ -49,7 +49,7 @@ class paymentControlller extends Controller
                     $data->update();
                 }
 
-                $last_payment_history_id = payment_history::where('user_id',$id)->orderBy('id','desc')->first();
+                $last_payment_history_id = payment_history::where('user_id',$id)->orderBy('id','desc')->first();;
                 $admin_payment_confarmation_history = new payment_confarmation_history();
                 $admin_payment_confarmation_history->user_id = $id;
                 $admin_payment_confarmation_history->admin_id = Auth::user()->id;
@@ -62,11 +62,11 @@ class paymentControlller extends Controller
                return redirect()->back();
 
 
-//        $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' month.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+        $curl = curl_init();
+        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' month.
+Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
 
             }
@@ -94,11 +94,11 @@ class paymentControlller extends Controller
                 $admin_payment_confarmation_history->save();
 
 
-//         $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+         $curl = curl_init();
+        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
+Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
                Toastr::success('Payment status Successfully Updated','success');
                return redirect()->back();
@@ -135,11 +135,11 @@ class paymentControlller extends Controller
                     $admin_payment_confarmation_history->payment_for_month  = $number_of_months;
                     $admin_payment_confarmation_history->save();
 
-//                    $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+                    $curl = curl_init();
+        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
+Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
                     Toastr::success('Payment status Successfully Updated','success');
                     return redirect()->back();
@@ -184,11 +184,11 @@ class paymentControlller extends Controller
                     $admin_payment_confarmation_history->save();
 
 
-//                    $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+                    $curl = curl_init();
+        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
+Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
                     Toastr::success('Payment status Successfully Updated','success');
                     return redirect()->back();

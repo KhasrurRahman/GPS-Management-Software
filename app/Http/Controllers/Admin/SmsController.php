@@ -20,116 +20,109 @@ class SmsController extends Controller
         $sms = Input::get('sms');
 
 
-//        $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode($sms).'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode($sms) . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
 
         Notification::route('mail', $user->email)
             ->notify(new EmailNotifier($user));
 
 
-
-          Toastr::success('Sms and Email Send Successfully','Success');
-          return redirect()->back();
+        Toastr::success('Sms and Email Send Successfully', 'Success');
+        return redirect()->back();
 
     }
 
     public function send_sms_to_due_user()
     {
-        $user = AllUser::where('payment_status',0)->where('order_status',0)->get();
+        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
 
-        foreach ($user as $key=>$data){
 
-            $number_of_due_months = payment_history::where('user_id',$data->id)->where('payment_status',0)->get()->count();
+        foreach ($user as $key => $data) {
 
-//            $curl = curl_init();
-//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Dear '.$data->name.', Your monthly bill '.$number_of_due_months * $data->monthly_bill.' taka was due. Please pay the bill before expire your connection.bkash merchant-01690275027.Your ref. Id is- '.$data->id.'
-//Safety GPS Tracker').'&msisdn=88'.$data->phone.'&csmsid=12345678'.$key, CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//            $resp = curl_exec($curl);
-//            curl_close($curl);
+            $number_of_due_months = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count();
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your monthly bill ' . $number_of_due_months * $data->monthly_bill . ' taka was due. Please pay the bill before expire your connection. bkash- 01713546487. Your ref. Id is- ' . $data->id . '
+Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
+            $resp = curl_exec($curl);
+            curl_close($curl);
 
 
         }
 
 
-        Toastr::success('Sms Send Successfully','Success');
+        Toastr::success('Sms Send Successfully', 'Success');
         return redirect()->back();
-
-
     }
-
 
 
     public function sms_first_reminder()
     {
-        $user = AllUser::where('payment_status',0)->where('order_status',0)->get();
+        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
 
-        foreach ($user as $key=>$data){
+        foreach ($user as $key => $data) {
 
-            $number_of_due_months = payment_history::where('user_id',$data->id)->where('payment_status',0)->get()->count();
+            $number_of_due_months = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count();
 
-//            $curl = curl_init();
-//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your monthly bill '.$number_of_due_months * $data->monthly_bill.' tk was due. Please pay the bill before the expair your connection. bkash Merchant- 01690275027. Use ref. Id- '.$data->id.'
-//            Safety GPS Tracker').'&msisdn=88'.$data->phone.'&csmsid=12345678'.$key, CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//            $resp = curl_exec($curl);
-//            curl_close($curl);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your monthly bill ' . $number_of_due_months * $data->monthly_bill . ' tk was due. Please pay the bill before the expair your connection. bkash- 01713546487. Use ref. Id- ' . $data->id . '
+            Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
+            $resp = curl_exec($curl);
+            curl_close($curl);
 
 
         }
 
 
-        Toastr::success('Sms Send Successfully','Success');
+        Toastr::success('Sms Send Successfully', 'Success');
         return redirect()->back();
 
 
     }
 
 
+    public function over_due_sms()
+    {
+        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
 
+        foreach ($user as $key => $data) {
 
-
-public function over_due_sms()
-{
-            $user = AllUser::where('payment_status',0)->where('order_status',0)->get();
-
-        foreach ($user as $key=>$data){
-
-            if (payment_history::where('user_id',$data->id)->where('payment_status',0)->get()->count() > 2){
+            if (payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() > 2) {
                 $curl = curl_init();
-            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your safety GPS monthly bill is overdue. Total due: ( '.$data->monthly_bill * payment_history::where('user_id',$data->id)->where('payment_status',0)->get()->count() .' ) for ('.payment_history::where('user_id',$data->id)->where('payment_status',0)->get()->count().')Please pay your bill before expiring your connection.
-Safety GPS Tracker').'&msisdn=88'.$data->phone.'&csmsid=12345678'.$key, CURLOPT_USERAGENT => 'Sample cURL Request' ));
-            $resp = curl_exec($curl);
-            curl_close($curl);
+                curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your safety GPS monthly bill is overdue. Total due: ( ' . $data->monthly_bill * payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() . ' ) for (' . payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() . ')Please pay your bill before expiring your connection.
+Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
+                $resp = curl_exec($curl);
+                curl_close($curl);
             }
-
 
 
         }
 
 
-        Toastr::success('Sms Send Successfully','Success');
+        Toastr::success('Sms Send Successfully', 'Success');
         return redirect()->back();
-}
+    }
 
 
+    public function single_sms(Request $request)
+    {
+        $request->validate([
+            'personal_sms_body' => 'required',
+        ]);
 
+//    $user = AllUser::find($id);
+//    $number_of_due_months = payment_history::where('user_id',$user->id)->where('payment_status',0)->get()->count();
+//            $curl = curl_init();
+//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your monthly bill '.$number_of_due_months * $user->monthly_bill.' tk was due. Please pay the bill before the expair your connection. bkash- 01713546487. Use ref. Id- '.$user->id.'
+//            Safety GPS').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+//            $resp = curl_exec($curl);
+//            curl_close($curl);
 
-public function single_sms($id)
-{
-    $user = AllUser::find($id);
-    $number_of_due_months = payment_history::where('user_id',$user->id)->where('payment_status',0)->get()->count();
-            $curl = curl_init();
-            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your monthly bill '.$number_of_due_months * $user->monthly_bill.' tk was due. Please pay the bill before the expair your connection. bkash Merchant- 01690275027. Use ref. Id- '.$user->id.'
-            Safety GPS').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-            $resp = curl_exec($curl);
-            curl_close($curl);
-
-            Toastr::success('SMS Send Successfully','Success');
-            return redirect()->back();
-}
-
+        return response()->json(['success' => 'Done']);
+    }
 
 
 }

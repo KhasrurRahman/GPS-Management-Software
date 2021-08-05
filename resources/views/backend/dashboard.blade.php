@@ -50,7 +50,7 @@
               <div class="icon">
                <i class="far fa-money-bill-alt"></i>
               </div>
-              <a href="{{route('admin.all_bill_schedule')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('admin.billing_history')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -65,7 +65,7 @@
               <div class="icon">
                 <i class="fas fa-tablet"></i>
               </div>
-              <a href="" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('admin.device_sell_history')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
 
@@ -108,7 +108,7 @@
               <div class="icon">
                 <i class="fas fa-money-bill"></i>
               </div>
-              <a href="{{route('admin.all_bill_schedule')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{route('admin.billing_history')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
 

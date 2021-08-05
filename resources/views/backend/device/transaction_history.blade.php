@@ -12,8 +12,7 @@
 
 
 <div class="card">
-
-            <div class="card-header" >
+            <div class="card-header">
                 <form action="{{route('admin.device_transaction_history_date')}}" method="post">
                     @csrf
                 <div class="row">
@@ -155,8 +154,4 @@
     });
   });
 </script>
-
-
-
-
 @endpush

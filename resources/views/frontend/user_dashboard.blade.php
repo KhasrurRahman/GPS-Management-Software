@@ -284,7 +284,7 @@
 
 
                     <div class="tab-pane" id="password">
-                        <form class="form-horizontal" method="POST" action="">
+                        <form class="form-horizontal" method="POST" action="{{route('changePassword')}}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('current-password') ? ' has-error' : '' }} row">

@@ -5570,7 +5570,7 @@ button.tm-videobutton:hover span {
   -webkit-transition: all 0.3s ease-in-out 0s;
   -o-transition: all 0.3s ease-in-out 0s;
   transition: all 0.3s ease-in-out 0s;
-  border: 1px solid #f15922;
+  border: 1px solid;
 }
 
 .tm-pricebox-header h5 {

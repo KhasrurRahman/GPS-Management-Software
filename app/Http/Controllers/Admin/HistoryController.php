@@ -47,7 +47,29 @@ class HistoryController extends Controller
 
     public function payment_by_online()
     {
-        $online_payment = Payment::latest()->get();
-        return view();
+        
+        $online_payment = Payment::where('status','Processing')->latest()->get();
+        $total_pay_amount = Payment::where('status','Processing')->sum('amount');
+    
+        return view('backend.history.online_payment_history',compact('online_payment','total_pay_amount'));
+        
+    }
+
+
+    public function payment_by_online_search_date(Request $request)
+    {
+        $start_date = Carbon::parse($request->start_date)->startOfDay()->toDateTimeString();
+        $end_date = Carbon::parse($request->end_date)->startOfDay()->toDateTimeString();
+        if ($start_date == $end_date){
+            $online_payment = Payment::whereDate('created_at', '=',$start_date)->where('status','Processing')->get();
+            $total_pay_amount = Payment::whereDate('created_at', '=',$start_date)->where('status','Processing')->sum('amount');
+        }else{
+            $online_payment = Payment::whereBetween('created_at', [$start_date, $end_date])->where('status','Processing')->get();
+            $total_pay_amount = Payment::whereBetween('created_at', [$start_date, $end_date])->where('status','Processing')->sum('amount');
+        }
+
+
+
+         return view('backend.history.online_payment_history',compact('online_payment','total_pay_amount'));
     }
 }

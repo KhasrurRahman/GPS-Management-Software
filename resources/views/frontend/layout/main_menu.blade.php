@@ -4,7 +4,7 @@
                     <div class="header-bottominner">
                         <div class="header-logo">
                             <a href="{{url('/')}}">
-                                <img src="{{asset("public/assets/backend/img/gps-tracker.png")}}" alt="logo" style="height: 45px">
+                                <img src="{{asset('public/assets/backend/img/logo.png')}}" alt="logo" style="height: 45px">
                             </a>
                         </div>
                         <nav class="tm-navigation">
@@ -14,6 +14,7 @@
                                 <li><a href="{{route('price_list')}}">Pricing</a></li>
                                 <li><a href="{{route('our_devices')}}">Tracking Devices</a></li>
                                 <li><a href="{{route('Pay_bill')}}">Pay Bill</a></li>
+                                <li><a href="{{route('single_page',1)}}">About Us</a></li>
                                 <li><a href="{{route('contact')}}">Contact</a></li>
                             </ul>
                         </nav>

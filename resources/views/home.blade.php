@@ -121,7 +121,19 @@
 @section('content')
 @include('frontend.layout.home_cover')
 
-
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/5e5e52dd6d48ff250ad90910/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 
             <!--Pricing-->
             <div class="tm-section services-area pt-2 bg-grey">
@@ -141,7 +153,8 @@
 				<div class="col-lg-3 col-md-6 col-sm-10 col-12 mt-30 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;padding: 8px !important;">
 					<div class="tm-pricebox" style="padding: 0px !important;">
 						<div class="tm-pricebox-header" style="border-bottom: 2px solid #f15922">
-							<div class="top" style="background-image: url('{{asset('storage/app/public/price_list/'.$data->bg_image)}}') !important;">
+							<div class="top" style="background-image: url('{{asset('storage/app/public/price_list/'.$data->bg_image)}}') !important;background-repeat: no-repeat;
+                                background-size: 100% 100%;">
 								<h3 class="top_header"><span style="color: #000000;text-shadow: 2px 3px 4px #f5f5f5;font-family: 'Open Sans',sans-serif"></span></h3>
 
 							</div>
@@ -263,7 +276,7 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="about-image2">
-                                <img class="wow fadeInLeft" src="{{asset('public/assets/frontend/images/bg/app-2.png')}}" alt="about image" style="visibility: visible; animation-name: fadeInLeft;">
+                                <img class="wow fadeInLeft" src="{{asset('public/assets/frontend/images/bg/210.png')}}" alt="about image" style="visibility: visible; animation-name: fadeInLeft;">
                             </div>
                         </div>
 {{--                        <div class="col-lg-4">--}}
@@ -274,21 +287,16 @@
                         <div class="col-lg-6">
                             <div class="about-content">
                                 <h2>Mobile app And Web</h2>
-                                <h6>Lorem ipsum dolor sit amet consectetur adipisicing elitsed do
-                                    eiusmod ncididunt ametfh consectetur.</h6>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod ncididunt
-                                    ametfh consectetur dolore magna aliqua. Ut enim ad minim veniam dolor sitame
-                                    magnaelit ate consectetur adipisicing. Expedita omnis maiores aliquam hic ab
-                                    dolorem aut. Saepe voluptatem pariatur aut vel repellat. Quo quis voluptas sunt
-                                    laudantium est et.</p>
+                                <h6>By using our mobile app or web you can track your vehicle anywhere</h6>
+                                <p>In real-time tracking mode you will see your current location on the map, or the last position when your GPS device connection was active. Server can generate and send you notifications via e-mail or notify with a pop-up window, when something happens. That kind of events might be when object enters or exits geofence area, violates speed limit, presses SOS button, GPS device loses connection and even starts engine or opens door.</p>
                                 <ul class="stylish-list">
-                                    <li><i class="far fa-check-square"></i>We are providing different services</li>
-                                    <li><i class="far fa-check-square"></i>We are one of leading company</li>
-                                    <li><i class="far fa-check-square"></i>We are one of leading company</li>
-                                    <li><i class="far fa-check-square"></i>We are one of leading company</li>
-                                    <li><i class="far fa-check-square"></i>We are one of leading company</li>
+                                    <li><i class="far fa-check-square"></i>Real Time Tracking </li>
+                                    <li><i class="far fa-check-square"></i>History and Reports</li>
+                                    <li><i class="far fa-check-square"></i>Alerts and notifications</li>
+                                    <li><i class="far fa-check-square"></i>Geofencing, fuel savings</li>
+                                    <li><i class="far fa-check-square"></i>For personal use or business</li>
                                 </ul>
-                                <a href="#" ><img src="{{asset('public/assets/frontend/images/bg/sote.png')}}" alt="" style="height: 140px;margin-top: 10px"><b></b></a>
+                                <a href="https://play.google.com/store/apps/details?id=com.safetygpsrackerclient.android&hl=en" ><img src="{{asset('public/assets/frontend/images/bg/sote.png')}}" alt="" style="height: 140px;margin-top: 10px"><b></b></a>
                             </div>
                         </div>
                     </div>
@@ -312,30 +320,56 @@
                     <div class="row">
 
                         <div class="col-md-3 col-sm-12 mt-2" style="" >
-                            <img src="{{asset('public/assets/frontend/images/bg/images.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
-                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">asd asd asda</p></spna>
+                            <img src="{{asset('public/assets/frontend/images/bg/-00.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Logistics Transport</p></spna>
 
                         </div>
 
 <div class="col-md-3 col-sm-12 mt-2" style="" >
-                            <img src="{{asset('public/assets/frontend/images/bg/images.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
-                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">asd asd asda</p></spna>
+                            <img src="{{asset('public/assets/frontend/images/bg/private vehicle.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Private Cars</p></spna>
 
                         </div>
 
 
 <div class="col-md-3 col-sm-12 mt-2" style="" >
-                            <img src="{{asset('public/assets/frontend/images/bg/images.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
-                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">asd asd asda</p></spna>
+                            <img src="{{asset('public/assets/frontend/images/bg/cons.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Construction Equipment</p></spna>
 
                         </div>
 
                         <div class="col-md-3 col-sm-12 mt-2" style="" >
-                            <img src="{{asset('public/assets/frontend/images/bg/images.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
-                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">asd asd asda</p></spna>
+                            <img src="{{asset('public/assets/frontend/images/bg/public.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Public Transport</p></spna>
+
+                        </div>
+                        
+                        <div class="col-md-3 col-sm-12 mt-2" style="" >
+                            <img src="{{asset('public/assets/frontend/images/bg/bike.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Motor Bike</p></spna>
 
                         </div>
 
+
+                        <div class="col-md-3 col-sm-12 mt-2" style="" >
+                            <img src="{{asset('public/assets/frontend/images/bg/ship.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Ship and Cargo</p></spna>
+
+                        </div>
+
+
+
+                        <div class="col-md-3 col-sm-12 mt-2" style="" >
+                            <img src="{{asset('public/assets/frontend/images/bg/autorickshar.jpg')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">CNG Auto-rickshaw</p></spna>
+
+                        </div>
+                        
+                       <div class="col-md-3 col-sm-12 mt-2" style="" >
+                            <img src="{{asset('public/assets/frontend/images/bg/truckd.png')}}" alt="" height="200" style="box-shadow: 3px 3px 6px 0px;width: 100% !important;">
+                            <spna><p style="background: white;box-shadow: 3px 3px 6px 0px;padding: 3px;text-align: center;font-size: 19px;font-weight: bold;margin: 0px;">Business Transport</p></spna>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -385,22 +419,22 @@
 
                     <div class="row">
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/gp.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/concox2.png')}}" alt="">
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/bl.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/teltonika.png')}}" alt="">
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/ws.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/coban.png')}}" alt="">
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/gp.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/benway.png')}}" alt="">
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/bl.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/sinotrack.png')}}" alt="">
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/ws.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/iTrack.png')}}" alt="">
                         </div>
                     </div>
 
@@ -430,7 +464,7 @@
                             <img src="{{asset('public/assets/frontend/images/bg/bl.png.webp')}}" alt="">
                         </div>
                         <div class="col-md-3 col-sm-12">
-                            <img src="{{asset('public/assets/frontend/images/bg/ws.png.webp')}}" alt="">
+                            <img src="{{asset('public/assets/frontend/images/bg/robi.png')}}" alt="">
                         </div>
                         <div class="col-md-3 col-sm-12">
                             <img src="{{asset('public/assets/frontend/images/bg/ws.png.webp')}}" alt="">
@@ -541,6 +575,7 @@
                 </div>
             </div>
             <!--// Count Down Area -->
+
 
 @endsection
 @push('js')

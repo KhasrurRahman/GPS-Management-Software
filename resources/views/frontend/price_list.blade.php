@@ -128,7 +128,8 @@
 				<div class="col-lg-3 col-md-6 col-sm-10 col-12 mt-30 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;padding: 8px !important;">
 					<div class="tm-pricebox" style="padding: 0px !important;">
 						<div class="tm-pricebox-header"  style="border-bottom: 2px solid #f15922">
-							<div class="top" style="background-image: url('{{asset('storage/app/public/price_list/'.$data->bg_image)}}') !important;">
+							<div class="top" style="background-image: url('{{asset('storage/app/public/price_list/'.$data->bg_image)}}') !important;background-repeat: no-repeat;
+                                background-size: 100% 100%;">
 								<h3 class="top_header"><span style="color: #ffffff;"></span></h3>
 
 							</div>

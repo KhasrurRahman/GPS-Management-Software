@@ -8,6 +8,7 @@ use App\Billing_shedule;
 use App\Device;
 use App\Exports\UsersExport;
 use App\monthly_bill_update_status;
+use App\Payment;
 use App\payment_confarmation_history;
 use App\payment_history;
 use App\Technician;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Webpatser\Uuid\Uuid;
+use Yajra\DataTables\Facades\DataTables;
 
 class All_usercontroller extends Controller
 {
@@ -31,54 +33,59 @@ class All_usercontroller extends Controller
     public function index()
     {
         $technician = Technician::all();
-        $user = AllUser::where('order_status',0)->latest()->get();
+        $user = AllUser::where('order_status', 0)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
 
     public function corporate_user()
     {
         $technician = Technician::all();
-        $user = AllUser::where('user_type',2)->latest()->get();
+        $user = AllUser::where('user_type', 2)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
 
     public function individual_user()
     {
         $technician = Technician::all();
-        $user = AllUser::where('user_type',1)->latest()->get();
+        $user = AllUser::where('user_type', 1)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
+
     public function expire_user()
     {
         $technician = Technician::all();
-        $user = AllUser::where('expair_status',1)->latest()->get();
+        $user = AllUser::where('expair_status', 1)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
-
 
 
     public function paid_user()
     {
         $technician = Technician::all();
-        $user = AllUser::where('payment_status',1)->where('expair_status',0)->latest()->get();
+        $user = AllUser::where('payment_status', 1)->where('expair_status', 0)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
 
     public function due_user()
     {
-        $now = Carbon::createFromFormat('Y-m-d',Carbon::now()->toDateString())->firstOfMonth();
-        $total_due_user = AllUser::where('next_payment_date','<',$now)->get();
-        foreach ($total_due_user as $data)
-        {
-            $user = AllUser::find($data->id);
-            $user->next_payment_date = $now->firstOfMonth();
-            $user->update();
+        $one_months_plus = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->firstOfMonth()->addMonths()->firstOfMonth();
 
+        $now = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->firstOfMonth();
+
+        $total_due_user = AllUser::where('next_payment_date', '<=', $now)->get();
+        $this_months_paid = AllUser::where('next_payment_date', '=', $one_months_plus)->where('payment_status', 0)->get();
+
+        // dd($one_months_plus);
+        foreach ($total_due_user as $data) {
+            $user = AllUser::find($data->id);
+            $user->next_payment_date = $one_months_plus;
+            $user->payment_status = 0;
+            $user->update();
 
             $payment_history = new payment_history();
             $payment_history->user_id = $user->id;
@@ -89,14 +96,22 @@ class All_usercontroller extends Controller
             $payment_history->nest_payment_date = $user->next_payment_date;
             $payment_history->save();
 
+        }
+
+        foreach ($this_months_paid as $data) {
+
+            $user = AllUser::find($data->id);
+            $user->payment_status = 0;
+            $user->update();
+
 
         }
 
 
         $technician = Technician::all();
-        $user = AllUser::where('payment_status',0)->where('expair_status',0)->latest()->get();
+        $user = AllUser::where('payment_status', 0)->where('expair_status', 0)->latest()->get();
         $device = Device::all();
-        return  view('backend.all_user.all_user',compact('user','technician','device'));
+        return view('backend.all_user.all_user', compact('user', 'technician', 'device'));
     }
 
     /**
@@ -106,41 +121,38 @@ class All_usercontroller extends Controller
      */
     public function create()
     {
-        return  view('backend.all_user.add_user');
+        return view('backend.all_user.add_user');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'phone' => ['required','unique:users'],
-                'user_type' => 'required',
-                'car_number' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'unique:users'],
+            'user_type' => 'required',
+            'car_number' => 'required',
 //                'car_model' => 'required',
-                'installation_date' => 'required',
-                'monthly_bill' => 'required',
-                'due_date' => 'required',
+            'installation_date' => 'required',
+            'monthly_bill' => 'required',
+            'due_date' => 'required',
 //                'device_price' => 'required',
-         ]);
+        ]);
 
-        $due_date =  $request->due_date;
+        $due_date = $request->due_date;
 
         $from = Carbon::createFromFormat('Y-m-d', $due_date)->firstOfMonth();
 
-        $to = Carbon::createFromFormat('Y-m-d',Carbon::now()->toDateString())->firstOfMonth();
-
-
+        $to = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->firstOfMonth();
 
 
         $diff_in_months = $to->diffInMonths($from);
 //        dd($to < $from,$to > $from,$to  == $from);
-
 
 
         $for_user_table = new User();
@@ -172,7 +184,7 @@ class All_usercontroller extends Controller
         $user->save();
 
 
-        if ($to < $from){
+        if ($to < $from) {
 //            if ($request->payment_this_date == null){
 //                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
 //                return redirect()->back();
@@ -191,98 +203,96 @@ class All_usercontroller extends Controller
             $user->next_payment_date = $from->addMonths()->firstOfMonth();
             $user->payment_status = 1;
             $user->update();
-        }elseif($to == $from)
-        {
+        } elseif ($to == $from) {
             $after_reduce_one_months = $from->subMonth();
-            for ($i=0; $i<=$diff_in_months;$i++){
-            $trialExpires = $after_reduce_one_months->addMonths(1);
+            for ($i = 0; $i <= $diff_in_months; $i++) {
+                $trialExpires = $after_reduce_one_months->addMonths(1);
 
-            $payment_history = new payment_history();
-            $payment_history->user_id = $user->id;
-            $payment_history->month_name = $trialExpires;
-            $payment_history->payment_this_date = $request->payment_this_date;
-            $payment_history->total_paid_until_this_date = '';
-            $payment_history->total_due = $request->monthly_bill;
+                $payment_history = new payment_history();
+                $payment_history->user_id = $user->id;
+                $payment_history->month_name = $trialExpires;
+                $payment_history->payment_this_date = $request->payment_this_date;
+                $payment_history->total_paid_until_this_date = '';
+                $payment_history->total_due = $request->monthly_bill;
 
-            $payment_history->save();
+                $payment_history->save();
             }
-               $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
-               $user->payment_status = 0;
-               $user->update();
-        }
-
-        elseif($to > $from){
+            $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
+            $user->payment_status = 0;
+            $user->update();
+        } elseif ($to > $from) {
             $after_reduce_one_months = $from->subMonth();
-            for ($i=0; $i<=$diff_in_months+1;$i++){
-            $trialExpires = $after_reduce_one_months->addMonths(1);
+            for ($i = 0; $i <= $diff_in_months + 1; $i++) {
+                $trialExpires = $after_reduce_one_months->addMonths(1);
 
-            $payment_history = new payment_history();
-            $payment_history->user_id = $user->id;
-            $payment_history->month_name = $trialExpires;
-            $payment_history->payment_this_date = $request->payment_this_date;
-            $payment_history->total_paid_until_this_date = '';
-            $payment_history->total_due = $request->monthly_bill;
+                $payment_history = new payment_history();
+                $payment_history->user_id = $user->id;
+                $payment_history->month_name = $trialExpires;
+                $payment_history->payment_this_date = $request->payment_this_date;
+                $payment_history->total_paid_until_this_date = '';
+                $payment_history->total_due = $request->monthly_bill;
 
-            $payment_history->save();
+                $payment_history->save();
             }
-               $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
-               $user->payment_status = 0;
-               $user->update();
+            $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
+            $user->payment_status = 0;
+            $user->update();
 
         }
 
 
-        Toastr::success('save Successfully :)','Success');
+        Toastr::success('save Successfully :)', 'Success');
         return redirect()->route('admin.all_user.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
+
         $user = AllUser::find($id);
-        $payment = payment_history::where('user_id',$user->id)->orderBy('id','desc')->get();
-        $payment_confermation = payment_confarmation_history::where('user_id',$id)->latest()->get();
-        $monthly_bill_update_history = monthly_bill_update_status::where('user_id',$id)->latest()->get();
+        $payment = payment_history::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+        $payment_confermation = payment_confarmation_history::where('user_id', $id)->latest()->get();
+        $monthly_bill_update_history = monthly_bill_update_status::where('user_id', $id)->latest()->get();
+        $onloine_payment = Payment::where('user_id', $user->user_id)->where('status', 'Processing')->orderBy('id', 'desc')->get();
 
-
-        return view('backend.all_user.user_profile',compact('user','payment','payment_confermation','monthly_bill_update_history'));
+        return view('backend.all_user.user_profile', compact('user', 'payment', 'payment_confermation', 'monthly_bill_update_history', 'onloine_payment'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $user = AllUser::findOrFail($id);
-        return view('backend.all_user.edit_user',compact('user'));
+        return view('backend.all_user.edit_user', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
 
-  $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'car_number' => 'required',
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'car_number' => 'required',
 //                'car_model' => 'required',
-                'installation_date' => 'required',
-                'monthly_bill' => 'required',
+            'installation_date' => 'required',
+            'monthly_bill' => 'required',
 //                'device_price' => 'required',
-         ]);
+        ]);
         $user = AllUser::findOrFail($id);
 
         $for_user_table = User::find($user->user_id);
@@ -303,20 +313,20 @@ class All_usercontroller extends Controller
         $user->device_price = $request->device_price;
         $user->update();
 
-        Toastr::success('Update Successfully :)','Success');
+        Toastr::success('Update Successfully :)', 'Success');
         return redirect()->route('admin.all_user.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $user = AllUser::findOrFail($id)->delete();
-        Toastr::success('Deleted Successfully :)','Success');
+        Toastr::success('Deleted Successfully :)', 'Success');
         return redirect()->back();
     }
 
@@ -326,15 +336,14 @@ class All_usercontroller extends Controller
         $user->expair_status = 1;
         $user->update();
 
-        $payment_history = payment_history::where('user_id',$user->id)->where('payment_status',0)->get()->count();
+        $payment_history = payment_history::where('user_id', $user->id)->where('payment_status', 0)->get()->count();
 
 //        $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is '.$payment_history * $user->monthly_bill.'tk for '.$payment_history.' months. If you need any further information please contact our care number ( 01713546487)').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+//        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is ' . $payment_history * $user->monthly_bill . 'tk for ' . $payment_history . ' months. If you need any further information please contact our care number ( 01713546487)') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
 //        $resp = curl_exec($curl);
 //        curl_close($curl);
 
-        Toastr::success('Expired Successfully :)','Success');
-        return redirect()->back();
+        return response()->json(['success' => 'Done']);
     }
 
     public function active_user($id)
@@ -344,27 +353,27 @@ class All_usercontroller extends Controller
         $user->update();
 
 //        $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank You for Your Payment,Your Connection is Now Active').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+//        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Thank You for Your Payment,Your Connection is Now Active') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
 //        $resp = curl_exec($curl);
 //        curl_close($curl);
 
-        Toastr::success('Activated Successfully :)','Success');
+        Toastr::success('Activated Successfully :)', 'Success');
         return redirect()->back();
     }
 
-    public function monthly_bill_update(Request $request,$id)
+    public function monthly_bill_update(Request $request, $id)
     {
 
         $request->validate([
-                'monthly_bill' => 'required',
-         ]);
+            'monthly_bill' => 'required',
+        ]);
 
         $user = AllUser::find($id);
 
-        if ($user->monthly_bill == $request->monthly_bill){
-            Toastr::Error('You Write The Same Previous Amount','Success');
+        if ($user->monthly_bill == $request->monthly_bill) {
+            Toastr::Error('You Write The Same Previous Amount', 'Success');
             return redirect()->back();
-        }else{
+        } else {
             $user->monthly_bill = $request->monthly_bill;
             $user->update();
 
@@ -374,8 +383,8 @@ class All_usercontroller extends Controller
             $monthly_bill_update_status->monthly_bill = $request->monthly_bill;
             $monthly_bill_update_status->save();
 
-        Toastr::success('Monthly Bill Updated Successfully :)','Success');
-        return redirect()->back();
+            Toastr::success('Monthly Bill Updated Successfully :)', 'Success');
+            return redirect()->back();
         }
 
     }
@@ -384,27 +393,29 @@ class All_usercontroller extends Controller
     public function full_order_history($id)
     {
         $user = AllUser::findOrFail($id);
-        $orders = Assign_technician_device::where('user_id',$user->id)->latest()->get();
-        $payment_confermation = payment_confarmation_history::where('user_id',$id)->latest()->get();
-        $monthly_bill_update_history = monthly_bill_update_status::where('user_id',$id)->latest()->get();
-        $payment = payment_history::where('user_id',$user->id)->orderBy('id','desc')->get();
+        $orders = Assign_technician_device::where('user_id', $user->id)->latest()->get();
+        $payment_confermation = payment_confarmation_history::where('user_id', $id)->latest()->get();
+        $monthly_bill_update_history = monthly_bill_update_status::where('user_id', $id)->latest()->get();
+        $payment = payment_history::where('user_id', $user->id)->orderBy('id', 'desc')->get();
 
 
-        return view('backend.all_user.order_history',compact('user','orders','payment_confermation','monthly_bill_update_history','payment'));
+        return view('backend.all_user.order_history', compact('user', 'orders', 'payment_confermation', 'monthly_bill_update_history', 'payment'));
     }
-
 
 
     public function bill_schedule(Request $request)
     {
+        $request->validate([
+            'note' => 'required',
+            'schedule_date' => 'required',
+        ]);
         $bill_schedule = new Billing_shedule();
         $bill_schedule->note = $request->note;
-        $bill_schedule->date = $request->date;
+        $bill_schedule->date = $request->schedule_date;
         $bill_schedule->user_id = $request->user_id;
         $bill_schedule->save();
 
-        Toastr::success('Billing Schedule Save Successfully','Success');
-        return redirect()->back();
+        return response()->json(['success' => 'Done']);
     }
 
 
@@ -414,7 +425,7 @@ class All_usercontroller extends Controller
     }
 
 
-public function update_user_after_mistake(Request $request)
+    public function update_user_after_mistake(Request $request)
     {
         $all_user = AllUser::find($request->user_id);
         $user = User::find($all_user->user_id)->delete();
@@ -422,29 +433,26 @@ public function update_user_after_mistake(Request $request)
 
 
         $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'phone' => ['required','unique:users'],
-                'user_type' => 'required',
-                'car_number' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'unique:users'],
+            'user_type' => 'required',
+            'car_number' => 'required',
 //                'car_model' => 'required',
-                'installation_date' => 'required',
-                'monthly_bill' => 'required',
-                'due_date' => 'required',
+            'installation_date' => 'required',
+            'monthly_bill' => 'required',
+            'due_date' => 'required',
 //                'device_price' => 'required',
-         ]);
+        ]);
 
-        $due_date =  $request->due_date;
+        $due_date = $request->due_date;
 
         $from = Carbon::createFromFormat('Y-m-d', $due_date)->firstOfMonth();
 
-        $to = Carbon::createFromFormat('Y-m-d',Carbon::now()->toDateString())->firstOfMonth();
-
-
+        $to = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->firstOfMonth();
 
 
         $diff_in_months = $to->diffInMonths($from);
 //        dd($to < $from,$to > $from,$to  == $from);
-
 
 
         $for_user_table = new User();
@@ -476,7 +484,7 @@ public function update_user_after_mistake(Request $request)
         $user->save();
 
 
-        if ($to < $from){
+        if ($to < $from) {
 //            if ($request->payment_this_date == null){
 //                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
 //                return redirect()->back();
@@ -495,61 +503,142 @@ public function update_user_after_mistake(Request $request)
             $user->next_payment_date = $from->addMonths()->firstOfMonth();
             $user->payment_status = 1;
             $user->update();
-        }elseif($to == $from)
-        {
+        } elseif ($to == $from) {
             $after_reduce_one_months = $from->subMonth();
-            for ($i=0; $i<=$diff_in_months;$i++){
-            $trialExpires = $after_reduce_one_months->addMonths(1);
+            for ($i = 0; $i <= $diff_in_months; $i++) {
+                $trialExpires = $after_reduce_one_months->addMonths(1);
 
-            $payment_history = new payment_history();
-            $payment_history->user_id = $user->id;
-            $payment_history->month_name = $trialExpires;
-            $payment_history->payment_this_date = $request->payment_this_date;
-            $payment_history->total_paid_until_this_date = '';
-            $payment_history->total_due = $request->monthly_bill;
+                $payment_history = new payment_history();
+                $payment_history->user_id = $user->id;
+                $payment_history->month_name = $trialExpires;
+                $payment_history->payment_this_date = $request->payment_this_date;
+                $payment_history->total_paid_until_this_date = '';
+                $payment_history->total_due = $request->monthly_bill;
 
-            $payment_history->save();
+                $payment_history->save();
             }
-               $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
-               $user->payment_status = 0;
-               $user->update();
-        }
-
-        elseif($to > $from){
+            $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
+            $user->payment_status = 0;
+            $user->update();
+        } elseif ($to > $from) {
             $after_reduce_one_months = $from->subMonth();
-            for ($i=0; $i<=$diff_in_months+1;$i++){
-            $trialExpires = $after_reduce_one_months->addMonths(1);
+            for ($i = 0; $i <= $diff_in_months + 1; $i++) {
+                $trialExpires = $after_reduce_one_months->addMonths(1);
 
-            $payment_history = new payment_history();
-            $payment_history->user_id = $user->id;
-            $payment_history->month_name = $trialExpires;
-            $payment_history->payment_this_date = $request->payment_this_date;
-            $payment_history->total_paid_until_this_date = '';
-            $payment_history->total_due = $request->monthly_bill;
+                $payment_history = new payment_history();
+                $payment_history->user_id = $user->id;
+                $payment_history->month_name = $trialExpires;
+                $payment_history->payment_this_date = $request->payment_this_date;
+                $payment_history->total_paid_until_this_date = '';
+                $payment_history->total_due = $request->monthly_bill;
 
-            $payment_history->save();
+                $payment_history->save();
             }
-               $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
-               $user->payment_status = 0;
-               $user->update();
+            $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
+            $user->payment_status = 0;
+            $user->update();
 
         }
 
 
-        Toastr::success('Please Dont Mistake Again','Success');
+        Toastr::success('Please Dont Mistake Again', 'Success');
         return redirect()->route('admin.all_user.index');
     }
 
-    public function user_note_save(Request $request,$id)
+    public function user_note_save(Request $request, $id)
     {
         $all_user = AllUser::find($id);
-        $all_user->note =$request->note;
+        $all_user->note = $request->note;
         $all_user->update();
 
 
         return response()->json([
             'message' => $all_user,
         ]);
+    }
+
+
+    public function search_user(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = AllUser::query();
+            if ($request->username !== null) {
+                $query->where('name', 'like', '%' . $request->username . '%');
+            }
+            if ($request->email !== null) {
+                $query->where('email', 'like', '%' . $request->email . '%');
+            }
+            if ($request->search_car_number !== null) {
+                $query->where('car_number', 'like', '%' . $request->search_car_number . '%');
+            }
+            if ($request->search_user_type !== null) {
+                $query->where('user_type', $request->search_user_type);
+            }
+            if ($request->search_activation_type !== null) {
+                $query->where('expair_status', $request->search_activation_type);
+            }
+            if ($request->search_payment_status !== null) {
+                $query->where('payment_status', $request->search_payment_status);
+            }
+            if ($request->mobile !== null) {
+                $query->where('phone', $request->mobile);
+            }
+            if ($request->ref_id !== null) {
+                $query->where('id', $request->ref_id);
+            }
+            $query->orderBy('all_users.id', 'desc');
+
+            return Datatables::of($query)
+                ->setTotalRecords($query->count())
+                ->addIndexColumn()
+                ->addColumn('id', function ($data) {
+                    return $data->id;
+                })->addColumn('name', function ($data) {
+                    return '<a  href="' . url('admin/all_user/' . $data->id) . '" target="_blank">' . $data->name . '</a>';
+                })->addColumn('phone', function ($data) {
+                    return $data->phone;
+                })->addColumn('email', function ($data) {
+                    return $data->email ? $data->email : '';
+                })->addColumn('car_number', function ($data) {
+                    return $data->car_number;
+                })->addColumn('monthly_bill', function ($data) {
+                    return $data->monthly_bill ? $data->monthly_bill : '';
+                })->addColumn('note', function ($data) {
+                    return str_limit($data->note, 30);
+                })->addColumn('assign_technician', function ($data) {
+                    return $data->assign_techician ? '<a  href="' . url('admin/technician/' . $data->assign_techician->technician_id) . '" target="_blank">' . $data->assign_techician->technician->name . '</a>' . '<br><span class="right badge badge-success">' . $data->assign_techician->created_at->diffForHumans() . '</span>' : '';
+                })->addColumn('expair_status', function ($data) {
+                    $status = '';
+                    if ($data->expair_status == 0) {
+                        $status = '<span class="right badge badge-info">Active</span>';
+                    } else {
+                        $status = '<span class="right badge badge-warning">Expired</span>';
+                    }
+                    return $status;
+                })->addColumn('payment_status', function ($data) {
+                    $status = '';
+                    if ($data->payment_status == 1) {
+                        $status = '<span class="right badge badge-info">Paid</span>';
+                    } else {
+                        $status = '<span class="right badge badge-warning">Unpaid</span>';
+                    }
+                    return $status;
+                })
+                ->addColumn('action', function ($data) {
+                    $expair_status = $data->expair_status == 0 ? '<a class="dropdown-item" href="#" onclick="expier_user(' . $data->id . ')" >Expire</a>' : '<a class="dropdown-item" href="#" onclick="active_user(' . $data->id . ')">Active</a> ';
+
+                    $bill_schedule_status = $data->bill_schedule ? '<button type="button" id="mouse_hover" class="dropdown-item bg-pink" data-toggle="tooltip" data-placement="top" title="Scheduled at: ' . $data->bill_schedule->created_at . ', comment: ' . $data->bill_schedule->note . '">Scheduled </button> ' : ' <a class="dropdown-item" href="" data-toggle="modal" data-target="#bill_shedule" onclick="bill_user_id(' . $data->id . ')">Bill Schedule</a>';
+
+                    $assign_technician = $data->assign_techician ? '' : ' <a class="dropdown-item" href="" data-toggle="modal" data-target="#assign_technician" onclick="user_id(' . $data->id . ')">Assign Technician</a>';
+
+//                    $action_button = ' <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '"><i class="fas fa-edit"></i></a> ' . $expair_status . $bill_schedule_status . $assign_technician . ' <dropdown-item bg-pink" href="#" onclick="send_sms(' . $data->id . ')"><i class="fas fa-sms"></i></a>';
+                    
+                    $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a> </div> </div>';
+                    return $action_button;
+                })
+                ->rawColumns(['action', 'id', 'name', 'phone', 'email', 'car_number', 'monthly_bill', 'payment_status', 'note', 'assign_technician','expair_status'])
+                ->make(true);
+        }
     }
 
 

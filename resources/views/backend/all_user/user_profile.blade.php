@@ -100,6 +100,7 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
               <div class="card-header p-2">
                 <ul class="nav nav-pills">
                   <li class="nav-item"><a class="nav-link active" href="#payment" data-toggle="tab">Payment history</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#online_payment" data-toggle="tab">online Payment history</a></li>
                   <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Confirmation history</a></li>
                   <li class="nav-item"><a class="nav-link" href="#monthly_bill" data-toggle="tab">Monthly Bill update history</a></li>
                   <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
@@ -182,6 +183,49 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
 
 
 
+
+      <div class="tab-pane" id="online_payment">
+        <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Online Payment history</h3>
+            </div>
+                      <!-- /.card-header -->
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>payment Amount</th>
+                  <th>Payment For Month</th>
+                  <th>Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($onloine_payment as $key=>$data)
+                <tr>
+                  <td>{{$key+1}}</td>
+                  <td>{{$data->amount}}</td>
+                  <td>{{$data->number_of_months}} Tk</td>
+                  <td>{{date("jS  F Y - h:i:s A", strtotime($data->created_at))}}</td>
+                </tr>
+                @endforeach
+
+                </tbody>
+                <tfoot>
+                   <tr>
+                  <th>Id</th>
+                  <th>payment Amount</th>
+                  <th>Payment For Month</th>
+                  <th>Date</th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+                  </div>
+             </div>
+
+
+
                   <!-- /.tab-pane -->
     <div class="tab-pane" id="timeline">
         <div class="card">
@@ -226,9 +270,13 @@ use App\payment_history;$due_from = payment_history::where('user_id',$user->id)-
                 </tfoot>
               </table>
             </div>
-            <!-- /.card-body -->
                   </div>
              </div>
+
+
+
+
+
                   <!-- /.tab-pane -->
                     <!-- /.tab-pane -->
     <div class="tab-pane" id="monthly_bill">
