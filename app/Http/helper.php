@@ -4,47 +4,30 @@ use GuzzleHttp\Client;
 
 function send_sms($message, $mobile_number)
 {
-    $number = implode('|', $mobile_number);
-    $data = array(
-        'user' => 'safetygps',
-        'pass' => '22p>7E36',
-        'sid' => 'SafetyGPS',
-        'sms' => $message,
-        'msisdn' => $number,
-        'csmsid' => '123456789',
-    );
-    $url = "http://sms.sslwireless.com/pushapi/dynamic/server.php";
-    $handle = curl_init($url);
-    curl_setopt($handle, CURLOPT_POST, true);
-    curl_setopt($handle, CURLOPT_POSTFIELDS, $data);
-    curl_exec($handle);
-    curl_close($handle);
-    dd($url);
-}
-
-
-function send_sms2()
-{
-    $user = "safetygps";
-    $pass = "22p>7E36";
-    $sid = "SafetyGPS";
-    $url = "http://sms.sslwireless.com/pushapi/dynamic/server.php";
-    $param = "user=$user&pass=$pass&sms[0][0]= 8801761955765 &sms[0][1]=" . urlencode("Test 
-SMS 1") . "&sid=$sid";
-    $crl = curl_init();
-    curl_setopt($crl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($crl, CURLOPT_SSL_VERIFYHOST, 2);
-    curl_setopt($crl, CURLOPT_URL, $url);
-    curl_setopt($crl, CURLOPT_HEADER, 0);
-    curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($crl, CURLOPT_POST, 1);
-    curl_setopt($crl, CURLOPT_POSTFIELDS, $param);
-    $response = curl_exec($crl);
-    curl_close($crl);
+    $params = [
+        "api_token" => 'ratin-788f2c73-802d-4d90-987e-4ae9ff0cc3e4',
+        "sid" => 'SAFETYGPSMASK',
+        "msisdn" => $mobile_number,
+        "sms" => $message,
+        "batch_csms_id" => '2934fe343'
+    ];
+    $url = trim('https://smsplus.sslwireless.com', '/') . "/api/v3/send-sms/bulk";
+    $params = json_encode($params);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($params), 'accept:application/json'));
+    $response = curl_exec($ch);
+    curl_close($ch);
     dd($response);
 }
 
-function api_cinfig()
+
+function get_user_api_key()
 {
     return 'key=A7A2CBE63242A5AB2519F13FA72DCA21';
 }
@@ -60,11 +43,11 @@ function check_user($email)
 
 function add_user($email)
 {
-        $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=ADD_USER,' . $email.',true', CURLOPT_USERAGENT => 'Sample cURL Request'));
-        $resp = curl_exec($curl);
-        curl_close($curl);
-        dd($resp);
+    $curl = curl_init();
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=ADD_USER,' . $email . ',true', CURLOPT_USERAGENT => 'Sample cURL Request'));
+    $resp = curl_exec($curl);
+    curl_close($curl);
+    dd($resp);
 }
 
 

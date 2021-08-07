@@ -28,7 +28,6 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-
         $order = order::where('order_status', 0)->get();
         $registered_user = AllUser::where('order_status', 0)->get();
         $total_collected_amount = payment_history::sum('payment_this_date');
@@ -62,7 +61,9 @@ class AdminDashboardController extends Controller
 
     public function blank()
     {
-        delete_user('test@gmail.com');
+        $numbers = ["01761955765","01761955765"];
+        send_sms('টেস্ট মেসেজ',$numbers);
+//        delete_user('test@gmail.com');
     }
 
     public function home_page_banner()
