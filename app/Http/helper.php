@@ -27,9 +27,17 @@ function send_sms($message, $mobile_number)
 }
 
 
-function get_user_api_key()
+function api_cinfig()
 {
     return 'key=A7A2CBE63242A5AB2519F13FA72DCA21';
+}
+function user_api_key($email)
+{
+    $curl = curl_init();
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=GET_USER_API_KEY,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
+    $resp = curl_exec($curl);
+    curl_close($curl);
+    return $resp;
 }
 
 function check_user($email)
@@ -64,9 +72,13 @@ function delete_user($email)
 
 }
 
-function object_set_activity()
+function user_objects($email)
 {
-    https://safetyvts.com/api/api.php?api=server&ver=1.0&key=A7A2CBE63242A5AB2519F13FA72DCA21&cmd=USER_GET_OBJECTS
+    $curl = curl_init();
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=user&ver=1.0&key=' . user_api_key($email) . '&cmd=USER_GET_OBJECTS'));
+    $resp = curl_exec($curl);
+    curl_close($curl);
+    return $resp;
 }
 
 

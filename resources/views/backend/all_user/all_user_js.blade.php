@@ -283,6 +283,27 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
+    
+    function show_devices(id)
+    {
+        $.ajax({
+            url: '{{url('admin/show_devices')}}/'+id,
+            type: "GET",
+            success: function (response) {
+                console.log(response)
+                // if (response == "user found") {
+                //     toastr.success('', 'Find');
+                // }else if(response == "user not found") {
+                //     toastr.success('', 'Not Find');
+                // }
+            },
+            error: function (response) {
+                if (response.responseJSON.errors.personal_sms_body) {
+                    toastr.error('Please Write a Valid Sms', 'warning');
+                }
+            }
+        });
+    }
 
 
 </script>

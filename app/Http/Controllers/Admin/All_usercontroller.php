@@ -342,6 +342,7 @@ class All_usercontroller extends Controller
 //        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is ' . $payment_history * $user->monthly_bill . 'tk for ' . $payment_history . ' months. If you need any further information please contact our care number ( 01713546487)') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
 //        $resp = curl_exec($curl);
 //        curl_close($curl);
+        
 
         return response()->json(['success' => 'Done']);
     }
@@ -633,11 +634,22 @@ class All_usercontroller extends Controller
 
 //                    $action_button = ' <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '"><i class="fas fa-edit"></i></a> ' . $expair_status . $bill_schedule_status . $assign_technician . ' <dropdown-item bg-pink" href="#" onclick="send_sms(' . $data->id . ')"><i class="fas fa-sms"></i></a>';
                     
-                    $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a> </div> </div>';
+                    $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="show_devices(' . $data->id . ')">Show Devices</a> <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a> </div> </div>';
                     return $action_button;
                 })
                 ->rawColumns(['action', 'id', 'name', 'phone', 'email', 'car_number', 'monthly_bill', 'payment_status', 'note', 'assign_technician','expair_status'])
                 ->make(true);
+        }
+    }
+    
+    public function show_devices($id)
+    {
+        $user = User::find($id);
+        $email = 'ratin@gmail.com';
+        if (check_user($email) == 'true'){
+            return user_objects($email);
+        }else{
+            return 'not find';
         }
     }
 

@@ -129,6 +129,8 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
 
     Route::get('export', 'All_usercontroller@export')->name('export');
     Route::post('update_user_after_mistake', 'All_usercontroller@update_user_after_mistake')->name('update_user_after_mistake');
+    
+    Route::get('show_devices/{id}', 'All_usercontroller@show_devices')->name('show_devices');
 
     //    payment
     Route::post('update_payment/{id}','paymentControlller@update_payment')->name('update_payment');
