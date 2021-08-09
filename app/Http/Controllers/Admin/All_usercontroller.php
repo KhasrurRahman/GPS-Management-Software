@@ -95,7 +95,6 @@ class All_usercontroller extends Controller
             $payment_history->payment_status = 0;
             $payment_history->nest_payment_date = $user->next_payment_date;
             $payment_history->save();
-
         }
 
         foreach ($this_months_paid as $data) {
@@ -103,8 +102,6 @@ class All_usercontroller extends Controller
             $user = AllUser::find($data->id);
             $user->payment_status = 0;
             $user->update();
-
-
         }
 
 
@@ -137,11 +134,11 @@ class All_usercontroller extends Controller
             'phone' => ['required', 'unique:users'],
             'user_type' => 'required',
             'car_number' => 'required',
-//                'car_model' => 'required',
+            //                'car_model' => 'required',
             'installation_date' => 'required',
             'monthly_bill' => 'required',
             'due_date' => 'required',
-//                'device_price' => 'required',
+            //                'device_price' => 'required',
         ]);
 
         $due_date = $request->due_date;
@@ -152,7 +149,7 @@ class All_usercontroller extends Controller
 
 
         $diff_in_months = $to->diffInMonths($from);
-//        dd($to < $from,$to > $from,$to  == $from);
+        //        dd($to < $from,$to > $from,$to  == $from);
 
 
         $for_user_table = new User();
@@ -185,10 +182,10 @@ class All_usercontroller extends Controller
 
 
         if ($to < $from) {
-//            if ($request->payment_this_date == null){
-//                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
-//                return redirect()->back();
-//            }
+            //            if ($request->payment_this_date == null){
+            //                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
+            //                return redirect()->back();
+            //            }
 
             $payment_history = new payment_history();
             $payment_history->user_id = $user->id;
@@ -237,7 +234,6 @@ class All_usercontroller extends Controller
             $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
             $user->payment_status = 0;
             $user->update();
-
         }
 
 
@@ -288,10 +284,10 @@ class All_usercontroller extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'car_number' => 'required',
-//                'car_model' => 'required',
+            //                'car_model' => 'required',
             'installation_date' => 'required',
             'monthly_bill' => 'required',
-//                'device_price' => 'required',
+            //                'device_price' => 'required',
         ]);
         $user = AllUser::findOrFail($id);
 
@@ -338,11 +334,11 @@ class All_usercontroller extends Controller
 
         $payment_history = payment_history::where('user_id', $user->id)->where('payment_status', 0)->get()->count();
 
-//        $curl = curl_init();
-//        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is ' . $payment_history * $user->monthly_bill . 'tk for ' . $payment_history . ' months. If you need any further information please contact our care number ( 01713546487)') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
-        
+        //        $curl = curl_init();
+        //        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is ' . $payment_history * $user->monthly_bill . 'tk for ' . $payment_history . ' months. If you need any further information please contact our care number ( 01713546487)') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
+        //        $resp = curl_exec($curl);
+        //        curl_close($curl);
+
 
         return response()->json(['success' => 'Done']);
     }
@@ -353,10 +349,10 @@ class All_usercontroller extends Controller
         $user->expair_status = 0;
         $user->update();
 
-//        $curl = curl_init();
-//        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Thank You for Your Payment,Your Connection is Now Active') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+        //        $curl = curl_init();
+        //        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Thank You for Your Payment,Your Connection is Now Active') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
+        //        $resp = curl_exec($curl);
+        //        curl_close($curl);
 
         Toastr::success('Activated Successfully :)', 'Success');
         return redirect()->back();
@@ -387,7 +383,6 @@ class All_usercontroller extends Controller
             Toastr::success('Monthly Bill Updated Successfully :)', 'Success');
             return redirect()->back();
         }
-
     }
 
 
@@ -438,11 +433,11 @@ class All_usercontroller extends Controller
             'phone' => ['required', 'unique:users'],
             'user_type' => 'required',
             'car_number' => 'required',
-//                'car_model' => 'required',
+            //                'car_model' => 'required',
             'installation_date' => 'required',
             'monthly_bill' => 'required',
             'due_date' => 'required',
-//                'device_price' => 'required',
+            //                'device_price' => 'required',
         ]);
 
         $due_date = $request->due_date;
@@ -453,7 +448,7 @@ class All_usercontroller extends Controller
 
 
         $diff_in_months = $to->diffInMonths($from);
-//        dd($to < $from,$to > $from,$to  == $from);
+        //        dd($to < $from,$to > $from,$to  == $from);
 
 
         $for_user_table = new User();
@@ -486,10 +481,10 @@ class All_usercontroller extends Controller
 
 
         if ($to < $from) {
-//            if ($request->payment_this_date == null){
-//                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
-//                return redirect()->back();
-//            }
+            //            if ($request->payment_this_date == null){
+            //                Toastr::error('Please Input the advanced amount:)','Advanced payment Field Required');
+            //                return redirect()->back();
+            //            }
 
             $payment_history = new payment_history();
             $payment_history->user_id = $user->id;
@@ -538,7 +533,6 @@ class All_usercontroller extends Controller
             $user->next_payment_date = $trialExpires->addMonths()->firstOfMonth();
             $user->payment_status = 0;
             $user->update();
-
         }
 
 
@@ -632,26 +626,52 @@ class All_usercontroller extends Controller
 
                     $assign_technician = $data->assign_techician ? '' : ' <a class="dropdown-item" href="" data-toggle="modal" data-target="#assign_technician" onclick="user_id(' . $data->id . ')">Assign Technician</a>';
 
-//                    $action_button = ' <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '"><i class="fas fa-edit"></i></a> ' . $expair_status . $bill_schedule_status . $assign_technician . ' <dropdown-item bg-pink" href="#" onclick="send_sms(' . $data->id . ')"><i class="fas fa-sms"></i></a>';
-                    
+                    //                    $action_button = ' <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '"><i class="fas fa-edit"></i></a> ' . $expair_status . $bill_schedule_status . $assign_technician . ' <dropdown-item bg-pink" href="#" onclick="send_sms(' . $data->id . ')"><i class="fas fa-sms"></i></a>';
+
                     $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="show_devices(' . $data->id . ')">Show Devices</a> <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a> </div> </div>';
                     return $action_button;
                 })
-                ->rawColumns(['action', 'id', 'name', 'phone', 'email', 'car_number', 'monthly_bill', 'payment_status', 'note', 'assign_technician','expair_status'])
+                ->rawColumns(['action', 'id', 'name', 'phone', 'email', 'car_number', 'monthly_bill', 'payment_status', 'note', 'assign_technician', 'expair_status'])
                 ->make(true);
         }
     }
-    
+
     public function show_devices($id)
     {
         $user = User::find($id);
         $email = 'ratin@gmail.com';
-        if (check_user($email) == 'true'){
-            return user_objects($email);
-        }else{
-            return 'not find';
+        if (check_user($email) == 'true') {
+            $objects = json_decode(user_objects($email), true);
+            //            return $objects;
+            $object_loop_active = '';
+            $object_loop_inactive = '';
+            foreach ($objects as $objects_data) {
+                if ($objects_data['active'] == 'true') {
+                    $object_loop_active .= '<input type="hidden" value="' . $id . '" id="object_user_id"><li class="list-group-item"> <div class="form-check"> <input class="form-check-input" type="checkbox" value="' . $objects_data['imei'] . '" id="defaultCheck' . $objects_data['imei'] . '" name="object_name_active" checked> <label class="form-check-label" for="defaultCheck' . $objects_data['imei'] . '"> ' . $objects_data['name'] . ' </label> </div></li>';
+                } else {
+                    $object_loop_inactive .= '<input type="hidden" value="' . $id . '" id="object_user_id"><li class="list-group-item"> <div class="form-check"> <input class="form-check-input" type="checkbox" value="' . $objects_data['imei'] . '" id="defaultCheck' . $objects_data['imei'] . '" name="object_name_inactive" checked> <label class="form-check-label" for="defaultCheck' . $objects_data['imei'] . '"> ' . $objects_data['name'] . ' </label> </div></li>';
+                }
+            }
+            return $object_array = [
+                'active' => $object_loop_active,
+                'inactive' => $object_loop_inactive,
+            ];
+        } else {
+            return 'user not find';
         }
     }
 
 
+    public function deactive_object(Request $request)
+    {
+         deactive_user_objects($request->active_object);
+        return response()->json(['success' => 'Done']);
+    }
+    
+    
+    public function active_object(Request $request)
+    {
+         active_user_objects($request->active_object);
+        return response()->json(['success' => 'Done']);
+    }
 }

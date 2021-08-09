@@ -122,6 +122,9 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::get('expire_user', 'All_usercontroller@expire_user')->name('expire_user');
     Route::get('active_user/{id}', 'All_usercontroller@active_user')->name('active_user');
 
+    Route::post('deactive_object', 'All_usercontroller@deactive_object')->name('deactive_object');
+    Route::post('active_object', 'All_usercontroller@active_object')->name('active_object');
+
     Route::get('corporate_user', 'All_usercontroller@corporate_user')->name('corporate_user');
     Route::get('individual_user', 'All_usercontroller@individual_user')->name('individual_user');
     Route::get('paid_user', 'All_usercontroller@paid_user')->name('paid_user');

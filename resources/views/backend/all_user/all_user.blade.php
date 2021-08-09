@@ -67,6 +67,7 @@
     @include('backend.all_user.assigen_techician_modal')
     @include('backend.all_user.bill_schedule_modal')
     @include('backend.all_user.sens_sms_modal')
+    @include('backend.all_user.all_objects_modal')
 @endsection
 @push('js')
     <script src="{{asset('public/assets/backend/js/datatables.min.js')}}"></script>

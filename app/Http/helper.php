@@ -29,12 +29,12 @@ function send_sms($message, $mobile_number)
 
 function api_cinfig()
 {
-    return 'key=A7A2CBE63242A5AB2519F13FA72DCA21';
+    return $key = 'A7A2CBE63242A5AB2519F13FA72DCA21';
 }
 function user_api_key($email)
 {
     $curl = curl_init();
-    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=GET_USER_API_KEY,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=GET_USER_API_KEY,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
     $resp = curl_exec($curl);
     curl_close($curl);
     return $resp;
@@ -43,7 +43,7 @@ function user_api_key($email)
 function check_user($email)
 {
     $curl = curl_init();
-    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=CHECK_USER_EXISTS,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=CHECK_USER_EXISTS,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
     $resp = curl_exec($curl);
     curl_close($curl);
     return $resp;
@@ -52,7 +52,7 @@ function check_user($email)
 function add_user($email)
 {
     $curl = curl_init();
-    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=ADD_USER,' . $email . ',true', CURLOPT_USERAGENT => 'Sample cURL Request'));
+    curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=ADD_USER,' . $email . ',true', CURLOPT_USERAGENT => 'Sample cURL Request'));
     $resp = curl_exec($curl);
     curl_close($curl);
     dd($resp);
@@ -63,13 +63,12 @@ function delete_user($email)
 {
     if (check_user($email) == 'true') {
         $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&' . api_cinfig() . '&cmd=DEL_USER,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=DEL_USER,' . $email, CURLOPT_USERAGENT => 'Sample cURL Request'));
         $resp = curl_exec($curl);
         curl_close($curl);
     } else {
         return 'user not find';
     }
-
 }
 
 function user_objects($email)
@@ -81,8 +80,24 @@ function user_objects($email)
     return $resp;
 }
 
+function deactive_user_objects($imei)
+{
+    foreach ($imei as $key => $value) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',false,false,'));
+        $resp = curl_exec($curl);
+        curl_close($curl);
+    }
+}
 
 
-//https://safetyvts.com/api/api.php?api=server&ver=1.0&key=A7A2CBE63242A5AB2519F13FA72DCA21&cmd=CHECK_USER_EXISTS,ratin@gmail.com
+function active_user_objects($imei)
+{
+    foreach ($imei as $key => $value) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',true,false,'));
+        $resp = curl_exec($curl);
+        curl_close($curl);
 
-//https://safetyvts.com/api/api.php?api=server&ver=1.0&key=A7A2CBE63242A5AB2519F13FA72DCA21&cmd=OBJECT_SET_ACTIVITY,1256315271,true,true,2021-10-01
+    }
+}
