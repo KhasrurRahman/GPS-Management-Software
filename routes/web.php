@@ -118,16 +118,12 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::get('full_order_history/{id}', 'All_usercontroller@full_order_history')->name('full_order_history');
     Route::post('bill_schedule', 'All_usercontroller@bill_schedule');
     Route::post('user_note_save/{id}', 'All_usercontroller@user_note_save')->name('user_note_save');
-
-    Route::get('expire_user', 'All_usercontroller@expire_user')->name('expire_user');
+    
     Route::get('active_user/{id}', 'All_usercontroller@active_user')->name('active_user');
 
     Route::post('deactive_object', 'All_usercontroller@deactive_object')->name('deactive_object');
     Route::post('active_object', 'All_usercontroller@active_object')->name('active_object');
-
-    Route::get('corporate_user', 'All_usercontroller@corporate_user')->name('corporate_user');
-    Route::get('individual_user', 'All_usercontroller@individual_user')->name('individual_user');
-    Route::get('paid_user', 'All_usercontroller@paid_user')->name('paid_user');
+    
     Route::get('due_user', 'All_usercontroller@due_user')->name('due_user');
 
     Route::get('export', 'All_usercontroller@export')->name('export');

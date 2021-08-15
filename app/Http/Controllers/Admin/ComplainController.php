@@ -24,10 +24,10 @@ class ComplainController extends Controller
 
         $user = AllUser::find($complain->user_id);
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Hi,'.$user->name.' this is to confirm that your technical issue has been resolved. If you have any questions, please contact us at 01713546487. Thank you.”').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-        $resp = curl_exec($curl);
-        curl_close($curl);
+//        $curl = curl_init();
+//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Hi,'.$user->name.' this is to confirm that your technical issue has been resolved. If you have any questions, please contact us at 01713546487. Thank you.”').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
+//        $resp = curl_exec($curl);
+//        curl_close($curl);
 
         Toastr::success('Complain solved Successfully','Success');
         return redirect()->back();

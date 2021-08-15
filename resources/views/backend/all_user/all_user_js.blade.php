@@ -1,6 +1,6 @@
 <script>
     // load data table
-    $(function() {
+    $(function () {
         var table = $('.yajra-datatable').DataTable({
             "order": [
                 [1, 'asc']
@@ -14,14 +14,14 @@
             "language": {
                 processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
             },
-            drawCallback: function(settings) {
+            drawCallback: function (settings) {
                 var api = this.api();
                 $('#total_data').html(api.ajax.json().recordsTotal);
             },
             ajax: {
                 url: "{{ url('admin/search_user') }}",
                 type: 'POSt',
-                data: function(d) {
+                data: function (d) {
                     d.username = $('#search_name').val();
                     d.mobile = $('#search_mobile').val();
                     d.email = $('#search_email').val();
@@ -34,10 +34,10 @@
                 }
             },
             columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex',
-                    searchable: false
-                },
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex',
+                searchable: false
+            },
                 {
                     data: 'id',
                     name: 'id'
@@ -89,7 +89,7 @@
             ]
         });
 
-        $('#search_form').on('submit', function(event) {
+        $('#search_form').on('submit', function (event) {
             event.preventDefault();
             table.draw(true);
         });
@@ -98,7 +98,7 @@
     // clear search form
     function form_reset() {
         document.getElementById("search_form").reset();
-        $('.yajra-datatable').DataTable().ajax.reload();
+        $('.yajra-datatable').DataTable().ajax.reload(null, false);
     }
 
     function hidetable() {
@@ -114,17 +114,17 @@
         document.getElementById('hidden_user_id').value = user_id;
     }
 
-    $('#technican_data').change(function() {
+    $('#technican_data').change(function () {
         var technician_id = $(this).val();
         if (technician_id) {
             $.ajax({
                 type: "GET",
                 url: "{{ url('admin/ajax_search_for_assign_tech') }}/" + technician_id,
-                success: function(res) {
+                success: function (res) {
 
                     if (res) {
                         $("#dynamic_field").empty();
-                        $.each(res, function(key, value) {
+                        $.each(res, function (key, value) {
                             $("#dynamic_field").append(
                                 '<tr class="dynamic-added"><td><select class="form-control" id="device_id" name="device_id[]"><option value="' +
                                 value.id + '" selected>' + value.model +
@@ -146,36 +146,25 @@
     });
 
     // save assigen techinician
-    $('#technician_assign_form').on('submit', function(event) {
+    $('#technician_assign_form').on('submit', function (event) {
         event.preventDefault();
         $.ajax({
             url: "{{ route('admin.technician_assign') }}",
             type: "POST",
             data: {
                 user_id: $('#hidden_user_id').val(),
-                order_id: $('#hidden_order_id').val(),
                 technician_id: $('#technican_data').val(),
-                collect_amount: $('#collect_amount').val(),
-                for_repair: $("#for_repair").is(":checked"),
-                quantity: $('input[name="quantity[]"]').map(function() {
-                    return this.value;
-                }).get(),
-                device_id: $('select[name="device_id[]"]').map(function() {
-                    return this.value;
-                }).get(),
+                assign_reason: $('#assign_reason').val(),
                 _token: '{{ csrf_token() }}'
             },
-            success: function(response) {
-
-                console.log(response)
+            success: function (response) {
                 $('#assign_technician').modal('hide');
                 $("#technician_assign_form")[0].reset();
-                $('#dynamic_field').html(' ')
                 $('#technician_idError').text(' ');
-                $('.yajra-datatable').DataTable().ajax.reload();
+                $('.yajra-datatable').DataTable().ajax.reload(null, false);
                 toastr.success('Technician Assign  Successful', 'Success');
             },
-            error: function(response) {
+            error: function (response) {
                 $('#technician_idError').text(response.responseJSON.errors.technician_id);
             }
         });
@@ -202,10 +191,10 @@
                 $.ajax({
                     type: 'get',
                     url: '{{ url('admin/user_delete') }}/' + id,
-                    success: function(response) {
+                    success: function (response) {
                         if (response) {
                             toastr.success('Expired Successful', 'Successful');
-                            $('.yajra-datatable').DataTable().ajax.reload();
+                            $('.yajra-datatable').DataTable().ajax.reload(null, false);
                         }
                     }
                 });
@@ -241,10 +230,10 @@
                 $.ajax({
                     type: 'get',
                     url: '{{ url('admin/active_user') }}/' + id,
-                    success: function(response) {
+                    success: function (response) {
                         if (response) {
                             toastr.success('Activated Successful', 'Successful');
-                            $('.yajra-datatable').DataTable().ajax.reload();
+                            $('.yajra-datatable').DataTable().ajax.reload(null, false);
                         }
                     }
                 });
@@ -268,7 +257,7 @@
     }
 
     // send personal sms
-    $('#send_personal_sms').on('submit', function(event) {
+    $('#send_personal_sms').on('submit', function (event) {
         event.preventDefault();
         $('#personal_sms_bodyError').text('');
         $.ajax({
@@ -279,14 +268,14 @@
                 personal_sms_body: $('#personal_sms_body').val(),
                 _token: '{{ csrf_token() }}'
             },
-            success: function(response) {
+            success: function (response) {
                 if (response) {
                     $('#send_personalsms').modal('hide');
                     $("#personal_sms_body").val('');
                     toastr.success('Sms send Successfully', 'Send');
                 }
             },
-            error: function(response) {
+            error: function (response) {
                 if (response.responseJSON.errors.personal_sms_body) {
                     toastr.error('Please Write a Valid Sms', 'warning');
                 }
@@ -296,7 +285,7 @@
     });
 
     // Billing Schedule
-    $('#bill_shedule_form').on('submit', function(event) {
+    $('#bill_shedule_form').on('submit', function (event) {
         event.preventDefault();
         $('#noteError').text('');
         $('#schedule_dateError').text('');
@@ -309,7 +298,7 @@
                 user_id: $('#billing_user_id').val(),
                 _token: '{{ csrf_token() }}'
             },
-            success: function(response) {
+            success: function (response) {
                 if (response) {
                     $('#bill_shedule').modal('hide');
                     $("#schedule_date").val('');
@@ -317,7 +306,7 @@
                     toastr.success('Billing Schedule Save Successful', 'Successful');
                 }
             },
-            error: function(response) {
+            error: function (response) {
                 $('#noteError').text(response.responseJSON.errors.note);
                 $('#schedule_dateError').text(response.responseJSON.errors.schedule_date);
             }
@@ -329,7 +318,7 @@
         document.getElementById('billing_user_id').value = user_id;
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
 
@@ -340,11 +329,12 @@
             '<div class="loader"> <span></span> <span></span> <span></span> <span></span> <span></span> </div>');
         $('#inactive_button').html('Active Devices');
         $('#active_button').html('InActive Devices');
+        $('#object_expaire_dateError').html('');
         $('#all_object').modal('show');
         $.ajax({
             url: '{{ url('admin/show_devices') }}/' + id,
             type: "GET",
-            success: function(response) {
+            success: function (response) {
                 // console.log(response.active)
                 if (response == "user not found") {
                     toastr.error('', 'Not Find');
@@ -353,7 +343,7 @@
                     $('#inactive_panel').html(response.inactive)
                 }
             },
-            error: function(response) {
+            error: function (response) {
                 if (response.responseJSON.errors.personal_sms_body) {
                     toastr.error('Please Write a Valid Sms', 'warning');
                 }
@@ -362,12 +352,12 @@
     }
 
     // action on active object
-    $('#active_object_form').on('submit', function(event) {
+    $('#active_object_form').on('submit', function (event) {
         event.preventDefault();
         $('.active_button').html(
-        '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
+            '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
         var favorite = [];
-        $.each($("input[name='object_name_active']:checked"), function() {
+        $.each($("input[name='object_name_active']:checked"), function () {
             favorite.push($(this).val());
         });
         $.ajax({
@@ -379,7 +369,7 @@
                 _token: '{{ csrf_token() }}'
             },
 
-            success: function(response) {
+            success: function (response) {
                 console.log(response);
                 if (response) {
                     $('#all_object').modal('hide');
@@ -388,7 +378,7 @@
                     toastr.success('Object InActive Successful', 'Successful');
                 }
             },
-            error: function(response) {
+            error: function (response) {
 
             }
         });
@@ -396,12 +386,12 @@
 
 
     // action on inactive object
-    $('#inactive_object_form').on('submit', function(event) {
+    $('#inactive_object_form').on('submit', function (event) {
         event.preventDefault();
         $('.active_button').html(
-        '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
+            '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
         var favorite = [];
-        $.each($("input[name='object_name_inactive']:checked"), function() {
+        $.each($("input[name='object_name_inactive']:checked"), function () {
             favorite.push($(this).val());
         });
         $.ajax({
@@ -410,10 +400,11 @@
             data: {
                 user_id: $('#object_user_id').val(),
                 active_object: favorite,
+                expaire_date: $('#object_expaire_date').val(),
                 _token: '{{ csrf_token() }}'
             },
 
-            success: function(response) {
+            success: function (response) {
                 console.log(response);
                 if (response) {
                     $('#all_object').modal('hide');
@@ -422,8 +413,10 @@
                     toastr.success('Object Active Successful', 'Successful');
                 }
             },
-            error: function(response) {
-
+            error: function (response) {
+                $('#object_expaire_dateError').text(response.responseJSON.errors.expaire_date);
+                $('#inactive_button').html('Active Devices');
+                $('#active_button').html('InActive Devices');
             }
         });
     });

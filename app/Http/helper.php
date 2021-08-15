@@ -91,13 +91,12 @@ function deactive_user_objects($imei)
 }
 
 
-function active_user_objects($imei)
+function active_user_objects($imei,$expaire_date)
 {
     foreach ($imei as $key => $value) {
         $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',true,false,'));
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',true,true,' . $expaire_date->toDateString() . ''));
         $resp = curl_exec($curl);
         curl_close($curl);
-
     }
 }

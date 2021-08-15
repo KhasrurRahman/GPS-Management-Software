@@ -252,6 +252,7 @@ class All_usercontroller extends Controller
 
         $user = AllUser::find($id);
         $payment = payment_history::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+//        dd($payment);
         $payment_confermation = payment_confarmation_history::where('user_id', $id)->latest()->get();
         $monthly_bill_update_history = monthly_bill_update_status::where('user_id', $id)->latest()->get();
         $onloine_payment = Payment::where('user_id', $user->user_id)->where('status', 'Processing')->orderBy('id', 'desc')->get();
@@ -664,14 +665,17 @@ class All_usercontroller extends Controller
 
     public function deactive_object(Request $request)
     {
-         deactive_user_objects($request->active_object);
+        deactive_user_objects($request->active_object);
         return response()->json(['success' => 'Done']);
     }
-    
-    
+
+
     public function active_object(Request $request)
     {
-         active_user_objects($request->active_object);
+        $request->validate([
+            'expaire_date' => ['required'],
+        ]);
+        active_user_objects($request->active_object,$request->expaire_date);
         return response()->json(['success' => 'Done']);
     }
 }

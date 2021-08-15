@@ -80,30 +80,6 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('admin.corporate_user')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Corporate User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('admin.individual_user')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Individual User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('admin.expire_user')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Expire User</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{route('admin.paid_user')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Paid User</p>
-                            </a>
-                        </li>
                         <li class="nav-item bg-yellow">
                             <a href="{{route('admin.due_user')}}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>

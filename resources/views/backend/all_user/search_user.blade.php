@@ -49,7 +49,7 @@
             <select class="form-control search_box_select2" name="search_activation_type" id="search_activation_type">
                 <option selected disabled>Please Select</option>
                 <option value="1">Expire User</option>
-                <option value="0">Paid User</option>
+                <option value="0">Active User</option>
             </select>
         </div>
         

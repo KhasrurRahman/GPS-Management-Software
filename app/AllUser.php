@@ -10,6 +10,10 @@ class AllUser extends Model
     {
         return $this->hasMany(payment_history::class,'user_id');
     }
+    public function last_active_payment()
+    {
+        return $this->hasMany(payment_history::class,'user_id')->where('payment_status',1)->orderBy('id', 'desc')->take(1);
+    }
     
     public function assign_techician()
     {

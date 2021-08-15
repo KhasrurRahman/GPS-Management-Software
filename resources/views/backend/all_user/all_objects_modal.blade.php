@@ -1,5 +1,5 @@
 <style>
-    nav>.nav.nav-tabs {
+    nav > .nav.nav-tabs {
 
         border: none;
         color: #fff;
@@ -8,8 +8,8 @@
 
     }
 
-    nav>div a.nav-item.nav-link,
-    nav>div a.nav-item.nav-link.active {
+    nav > div a.nav-item.nav-link,
+    nav > div a.nav-item.nav-link.active {
         border: none;
         padding: 5px 25px;
         color: #fff;
@@ -17,7 +17,7 @@
         border-radius: 0;
     }
 
-    nav>div a.nav-item.nav-link.active:after {
+    nav > div a.nav-item.nav-link.active:after {
         content: "";
         position: relative;
         bottom: -45px;
@@ -35,8 +35,8 @@
         padding: 30px 25px;
     }
 
-    nav>div a.nav-item.nav-link:hover,
-    nav>div a.nav-item.nav-link:focus {
+    nav > div a.nav-item.nav-link:hover,
+    nav > div a.nav-item.nav-link:focus {
         border: none;
         background: #e74c3c;
         color: #fff;
@@ -199,7 +199,7 @@
 </style>
 
 <div class="modal fade" id="all_object" tabindex="-1" role="dialog" aria-labelledby="all_objectLabel"
-    aria-hidden="true">
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -215,16 +215,16 @@
                             <nav>
                                 <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
-                                        href="#nav-home" role="tab" aria-controls="nav-home"
-                                        aria-selected="true">Active</a>
+                                       href="#nav-home" role="tab" aria-controls="nav-home"
+                                       aria-selected="true">Active</a>
                                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab"
-                                        href="#nav-profile" role="tab" aria-controls="nav-profile"
-                                        aria-selected="false">Inactive</a>
+                                       href="#nav-profile" role="tab" aria-controls="nav-profile"
+                                       aria-selected="false">Inactive</a>
                                 </div>
                             </nav>
                             <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                                 <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                    aria-labelledby="nav-home-tab">
+                                     aria-labelledby="nav-home-tab">
                                     <form action="" id="active_object_form">
                                         <ul class="list-group" id="active_panel">
 
@@ -233,11 +233,16 @@
                                     </form>
                                 </div>
                                 <div class="tab-pane fade" id="nav-profile" role="tabpanel"
-                                    aria-labelledby="nav-profile-tab">
+                                     aria-labelledby="nav-profile-tab">
                                     <form action="" id="inactive_object_form">
                                         <ul class="list-group" id="inactive_panel">
 
                                         </ul>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Object Expaire Date</label>
+                                            <input type="date" class="form-control" id="object_expaire_date" >
+                                            <span id="object_expaire_dateError" class="text-red error_field"></span>
+                                        </div>
                                         <button type="submit" class="btn btn-success btn-block active_button" id="inactive_button"></button>
                                     </form>
                                 </div>

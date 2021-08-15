@@ -22,14 +22,9 @@
                              <span id="technician_idError" class="text-red error_field"></span>
                         </div>
                         <div class="form-group">
-                            <label for="exampleFormControlSelect1">Collect Amount</label>
-                            <input type="number" class="form-control" id="collect_amount" name="collect_amount">
+                            <label for="exampleFormControlSelect1">Assign Reason</label>
+                            <input type="text" class="form-control" id="assign_reason" name="assign_reason">
                         </div>
-                        <div class="checkbox">
-                            <label><input type="checkbox" value="0" onclick="hidetable()" name="for_repair" id="for_repair"> Only For Repair</label>
-                        </div>
-                        <table class="table table-bordered" id="dynamic_field">
-                        </table>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

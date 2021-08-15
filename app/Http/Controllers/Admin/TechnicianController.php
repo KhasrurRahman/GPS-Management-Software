@@ -266,111 +266,21 @@ class TechnicianController extends Controller
         $request->validate([
             'technician_id' => 'required',
         ]);
-
-
+        
         $technician_id = $request->technician_id;
         $user_id = $request->user_id;
 
         $user_details = AllUser::find($user_id);
         $technician_details = Technician::find($technician_id);
+        
+        $assign_tecnician = new Assign_technician_device();
+        $assign_tecnician->technician_id = $technician_id;
+        $assign_tecnician->user_id = $user_id;
+        $assign_tecnician->order_id = $request->order_id;
+        $assign_tecnician->collect_amount = $request->collect_amount;
+        $assign_tecnician->save();
 
-        if (Assign_technician_device::where('user_id', $user_id)->where('status', 0)->exists()) {
-            Toastr::Error('Your Input Is error,Already Assigned A technician', 'Error');
-            return redirect()->back();
-        }
-
-        if (isset($request->for_repair)) {
-
-            $assign_tecnician = new Assign_technician_device();
-            $assign_tecnician->technician_id = $technician_id;
-            $assign_tecnician->user_id = $user_id;
-            $assign_tecnician->order_id = $request->order_id;
-            $assign_tecnician->collect_amount = $request->collect_amount;
-            $assign_tecnician->save();
-
-
-//send sms to technician
-            $curl = curl_init();
-            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Assign for: Repair
-Name: ' . $user_details->name . '
-M: ' . $user_details->phone . '
-A: ' . $user_details->par_add . '') . '&msisdn=88' . '01761955765' . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-            $resp = curl_exec($curl);
-            curl_close($curl);
-
-
-            //send sms to the user
-//            $curl = curl_init();
-//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('We have received your Complain. Your Problem solved by ( '.$technician_details->name.' ). Phone: '.$technician_details->phone.'.').'&msisdn=88'.$user_details->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//            $resp = curl_exec($curl);
-//            curl_close($curl);
-
-
-            Toastr::success('Technician Assign  Successfully :)', 'Success');
-            return redirect()->back();
-
-
-        } else {
-
-            $assign_tecnician = new Assign_technician_device();
-            $assign_tecnician->technician_id = $technician_id;
-            $assign_tecnician->user_id = $user_id;
-            $assign_tecnician->collect_amount = $request->collect_amount;
-            $assign_tecnician->order_id = $request->order_id;
-            $assign_tecnician->save();
-            $number = $request->input('device_id');
-
-            for ($i = 0; $i < count($number); $i++) {
-                $technician_stock = new technician_device_stock();
-                $technician_stock->technician_id = $technician_id;
-                $technician_stock->assign_id = $assign_tecnician->id;
-                $technician_stock->device_id = $request->device_id[$i];
-                $technician_stock->quantity = $request->quantity[$i];
-
-                $divice_quantity = technican_stock::where('technicain_id', $technician_stock->technician_id)->where('id', $technician_stock->device_id)->first();
-
-
-                $divice_quantity->quantity = $divice_quantity->quantity - $technician_stock->quantity;
-                $divice_quantity->update();
-
-                $technician_stock->device_model = $divice_quantity->model;
-                $technician_stock->save();
-
-            }
-
-
-            $devices = technician_device_stock::where('assign_id', $assign_tecnician->id)->get();
-            $device_model = [];
-            $quantity = [];
-            foreach ($devices as $data) {
-                $device_model[] = $data->device_model;
-                $quantity[] = $data->quantity;
-            }
-
-//send sms to technician
-//               $curl = curl_init();
-//                curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Assign for: Install
-//
-//    D: '.implode(', ', $device_model).'
-//    Q: '.implode(', ', $quantity).'
-//    Name: '.$user_details->name.'
-//    M: '.$user_details->phone.'
-//    A: '.$user_details->par_add.'
-//    Tk: '.$request->collect_amount.'').'&msisdn=88'.$technician_details->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//                $resp = curl_exec($curl);
-//                curl_close($curl);
-
-
-            //send sms to the user
-//            $curl = curl_init();
-//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('We have received your order. Your order completed by ( '.$technician_details->name.' ). Phone: '.$technician_details->phone.'.').'&msisdn=88'.$user_details->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//            $resp = curl_exec($curl);
-//            curl_close($curl);
-
-            return response()->json(['success' => 'Done']);
-
-        }
-
+        return response()->json(['success' => 'Done']);
     }
 
 
