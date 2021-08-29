@@ -70,52 +70,52 @@
                 </li>
 
 
-                <li class="nav-item has-treeview {{Request::is('admin/corporate_user*')?'menu-open': ''}}{{Request::is('admin/individual_user*')?'menu-open': ''}}{{Request::is('admin/expire_user*')?'menu-open': ''}}{{Request::is('admin/paid_user*')?'menu-open': ''}}{{Request::is('admin/due_user*')?'menu-open': ''}}">
-                    <a href="#"
-                       class="nav-link {{Request::is('admin/corporate_user*')?'menu-open': ''}}{{Request::is('admin/individual_user*')?'menu-open': ''}}{{Request::is('admin/expire_user*')?'menu-open': ''}}{{Request::is('admin/paid_user*')?'menu-open': ''}}{{Request::is('admin/due_user*')?'menu-open': ''}}">
-                        <i class="nav-icon fas fa-filter" style="color: green"></i>
-                        <p>
-                            User Filter
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item bg-yellow">
-                            <a href="{{route('admin.due_user')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Due User</p>
-                            </a>
-                        </li>
+                {{--                <li class="nav-item has-treeview {{Request::is('admin/corporate_user*')?'menu-open': ''}}{{Request::is('admin/individual_user*')?'menu-open': ''}}{{Request::is('admin/expire_user*')?'menu-open': ''}}{{Request::is('admin/paid_user*')?'menu-open': ''}}{{Request::is('admin/due_user*')?'menu-open': ''}}">--}}
+                {{--                    <a href="#"--}}
+                {{--                       class="nav-link {{Request::is('admin/corporate_user*')?'menu-open': ''}}{{Request::is('admin/individual_user*')?'menu-open': ''}}{{Request::is('admin/expire_user*')?'menu-open': ''}}{{Request::is('admin/paid_user*')?'menu-open': ''}}{{Request::is('admin/due_user*')?'menu-open': ''}}">--}}
+                {{--                        <i class="nav-icon fas fa-filter" style="color: green"></i>--}}
+                {{--                        <p>--}}
+                {{--                            User Filter--}}
+                {{--                            <i class="right fas fa-angle-left"></i>--}}
+                {{--                        </p>--}}
+                {{--                    </a>--}}
+                {{--                    <ul class="nav nav-treeview">--}}
+                {{--                        <li class="nav-item bg-yellow">--}}
+                {{--                            <a href="{{route('admin.due_user')}}" class="nav-link">--}}
+                {{--                                <i class="far fa-circle nav-icon"></i>--}}
+                {{--                                <p>Due User</p>--}}
+                {{--                            </a>--}}
+                {{--                        </li>--}}
 
-                    </ul>
-                </li>
+                {{--                    </ul>--}}
+                {{--                </li>--}}
 
 
-                <li class="nav-item has-treeview {{Request::is('admin/bill_schedule*')?'menu-open': ''}}">
-                    <a href="#" class="nav-link {{Request::is('admin/bill_schedule*')?'active': ''}}">
-                        <i class="nav-icon fas fa-calendar-check" style="color: #F0A732"></i>
-                        <p>
-                            Bill Schedule
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('admin.calendar')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Filter Schedule</p>
-                            </a>
-                        </li>
+{{--                <li class="nav-item has-treeview {{Request::is('admin/bill_schedule*')?'menu-open': ''}}">--}}
+{{--                    <a href="#" class="nav-link {{Request::is('admin/bill_schedule*')?'active': ''}}">--}}
+{{--                        <i class="nav-icon fas fa-calendar-check" style="color: #F0A732"></i>--}}
+{{--                        <p>--}}
+{{--                            Bill Schedule--}}
+{{--                            <i class="right fas fa-angle-left"></i>--}}
+{{--                        </p>--}}
+{{--                    </a>--}}
+{{--                    <ul class="nav nav-treeview">--}}
+{{--                        <li class="nav-item">--}}
+{{--                            <a href="{{route('admin.calendar')}}" class="nav-link">--}}
+{{--                                <i class="far fa-circle nav-icon"></i>--}}
+{{--                                <p>Filter Schedule</p>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
 
-                        <li class="nav-item">
-                            <a href="{{route('admin.all_bill_schedule')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>All Schedule</p>
-                            </a>
-                        </li>
+{{--                        <li class="nav-item">--}}
+{{--                            <a href="{{route('admin.all_bill_schedule')}}" class="nav-link">--}}
+{{--                                <i class="far fa-circle nav-icon"></i>--}}
+{{--                                <p>All Schedule</p>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
 
-                    </ul>
-                </li>
+{{--                    </ul>--}}
+{{--                </li>--}}
 
 
                 <li class="nav-item has-treeview {{Request::is('admin/order*')?'menu-open': ''}}{{Request::is('admin/assigned_order*')?'menu-open': ''}}">
@@ -188,6 +188,26 @@
                         </p>
                     </a>
                 </li>
+
+                @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+                    <li class="nav-item has-treeview {{Request::is('admin/sms*')?'menu-open': ''}}">
+                        <a href="#" class="nav-link {{Request::is('admin/sms*')?'active': ''}}">
+                            <i class="nav-icon fas fa-sms"></i>
+                            <p>
+                                Send Sms
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{route('admin.send_sms_to_selected_user_view')}}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Send sms to user</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
 
 
                 <li class="nav-item has-treeview {{Request::is('admin/device*')?'menu-open': ''}}">
@@ -421,10 +441,10 @@
 
                     <li class="nav-item"><a href="{{route('admin.team')}}"
                                             class="nav-link {{Request::is('admin/team')?'active': ''}}"><i
-                                class="nav-icon fas fa-tags"></i>Team member</a></li>
+                                    class="nav-icon fas fa-tags"></i>Team member</a></li>
                     <li class="nav-item"><a href="{{route('admin.contact')}}"
                                             class="nav-link {{Request::is('admin/contact')?'active': ''}}"><i
-                                class="nav-icon fas fa-map"></i>Contact Information</a></li>
+                                    class="nav-icon fas fa-map"></i>Contact Information</a></li>
                     {{--          <li class="nav-item"><a href="{{route('blank')}}" class="nav-link"><i class="nav-icon fas fa-th"></i>Blank</a></li>--}}
 
 
@@ -443,7 +463,7 @@
                         @csrf
                     </form>
                 </li>
-                
+
 
             </ul>
         </nav>

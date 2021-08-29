@@ -30,6 +30,8 @@
                     d.search_user_type = $('#search_user_type').val();
                     d.search_activation_type = $('#search_activation_type').val();
                     d.search_payment_status = $('#search_payment_status').val();
+                    d.schedule_status = $('#schedule_status').val();
+                    d.bill_schedule_date = $('#bill_schedule_date').val();
                     d._token = '{{ csrf_token() }}'
                 }
             },

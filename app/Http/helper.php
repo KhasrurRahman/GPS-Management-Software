@@ -6,7 +6,7 @@ function send_sms($message, $mobile_number)
 {
     $params = [
         "api_token" => 'ratin-788f2c73-802d-4d90-987e-4ae9ff0cc3e4',
-        "sid" => 'SAFETYGPSMASK',
+        "sid" => 'SAFETYGPSMASK_1',
         "msisdn" => $mobile_number,
         "sms" => $message,
         "batch_csms_id" => '2934fe343'
@@ -23,7 +23,6 @@ function send_sms($message, $mobile_number)
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($params), 'accept:application/json'));
     $response = curl_exec($ch);
     curl_close($ch);
-    dd($response);
 }
 
 
@@ -95,7 +94,7 @@ function active_user_objects($imei,$expaire_date)
 {
     foreach ($imei as $key => $value) {
         $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',true,true,' . $expaire_date->toDateString() . ''));
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',true,true,' . $expaire_date . ''));
         $resp = curl_exec($curl);
         curl_close($curl);
     }

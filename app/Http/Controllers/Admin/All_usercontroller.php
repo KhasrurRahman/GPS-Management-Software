@@ -582,6 +582,19 @@ class All_usercontroller extends Controller
             if ($request->ref_id !== null) {
                 $query->where('id', $request->ref_id);
             }
+
+            if ($request->schedule_status !== null) {
+                $query->whereHas('bill_schedule', function ($query2) use ($request) {
+                    $query2->where('user_id', '!=', 'asdasd');
+                });
+            }
+            
+            if ($request->bill_schedule_date !== null) {
+                $query->whereHas('bill_schedule', function ($query2) use ($request) {
+                    $query2->where('date', $request->bill_schedule_date);
+                });
+            }
+
             $query->orderBy('all_users.id', 'desc');
 
             return Datatables::of($query)
@@ -675,7 +688,7 @@ class All_usercontroller extends Controller
         $request->validate([
             'expaire_date' => ['required'],
         ]);
-        active_user_objects($request->active_object,$request->expaire_date);
+        active_user_objects($request->active_object, $request->expaire_date);
         return response()->json(['success' => 'Done']);
     }
 }

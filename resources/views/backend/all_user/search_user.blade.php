@@ -61,6 +61,20 @@
                 <option value="0">Unpaid User</option>
             </select>
         </div>
+        
+        <div class="col-2">
+            <label>Schedule Status</label>
+            <select class="form-control search_box_select2" name="schedule_status" id="schedule_status">
+                <option selected disabled>Please Select</option>
+                <option value="1">Yes</option>
+                <option>No</option>
+            </select>
+        </div>
+        
+        <div class="col-2">
+            <label>Schedule Date</label>
+            <input class="form-control form-control" type="date" id="bill_schedule_date"  name="bill_schedule_date">
+        </div>
 
 
         <div class="col-3">

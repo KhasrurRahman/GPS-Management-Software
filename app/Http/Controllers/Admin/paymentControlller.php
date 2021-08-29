@@ -217,8 +217,8 @@ class paymentControlller extends Controller
     {
         $user = AllUser::find($user_id);
         $email = 'ratin@gmail.com';
-        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth();
-        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth();
+        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->toDateString();
+        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth()->toDateString();
         if ($user_last_active_payment_month >= $corrent_month) {
             $objects = json_decode(user_objects($email), true);
             $all_object_array = array();

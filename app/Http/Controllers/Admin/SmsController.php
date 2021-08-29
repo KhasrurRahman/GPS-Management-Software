@@ -14,98 +14,55 @@ use Illuminate\Support\Facades\Notification;
 
 class SmsController extends Controller
 {
-    public function send_personal_sms($id)
+
+    public function send_sms_to_selected_user_view()
     {
-        $user = AllUser::find($id);
-        $sms = Input::get('sms');
-
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode($sms) . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-        $resp = curl_exec($curl);
-        curl_close($curl);
-
-
-        Notification::route('mail', $user->email)
-            ->notify(new EmailNotifier($user));
-
-
-        Toastr::success('Sms and Email Send Successfully', 'Success');
-        return redirect()->back();
-
+        return view('backend.sms.send_sms_notification');
     }
 
-    public function send_sms_to_due_user()
+    public function send_sms_to_selected_user(Request $request)
     {
-        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
+        $request->validate([
+            'sms' => 'required',
+        ]);
 
-
-        foreach ($user as $key => $data) {
-
-            $number_of_due_months = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count();
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your monthly bill ' . $number_of_due_months * $data->monthly_bill . ' taka was due. Please pay the bill before expire your connection. bkash- 01713546487. Your ref. Id is- ' . $data->id . '
-Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
-            $resp = curl_exec($curl);
-            curl_close($curl);
-
-
-        }
-
-
-        Toastr::success('Sms Send Successfully', 'Success');
-        return redirect()->back();
-    }
-
-
-    public function sms_first_reminder()
-    {
-        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
-
-        foreach ($user as $key => $data) {
-
-            $number_of_due_months = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count();
-
-            $curl = curl_init();
-            curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your monthly bill ' . $number_of_due_months * $data->monthly_bill . ' tk was due. Please pay the bill before the expair your connection. bkash- 01713546487. Use ref. Id- ' . $data->id . '
-            Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
-            $resp = curl_exec($curl);
-            curl_close($curl);
-
-
-        }
-
-
-        Toastr::success('Sms Send Successfully', 'Success');
-        return redirect()->back();
-
-
-    }
-
-
-    public function over_due_sms()
-    {
-        $user = AllUser::where('payment_status', 0)->where('order_status', 0)->where('expair_status', 0)->get();
-
-        foreach ($user as $key => $data) {
-
-            if (payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() > 2) {
-                $curl = curl_init();
-                curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your safety GPS monthly bill is overdue. Total due: ( ' . $data->monthly_bill * payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() . ' ) for (' . payment_history::where('user_id', $data->id)->where('payment_status', 0)->get()->count() . ')Please pay your bill before expiring your connection.
-Safety GPS Tracker') . '&msisdn=88' . $data->phone . '&csmsid=12345678' . $key, CURLOPT_USERAGENT => 'Sample cURL Request'));
-                $resp = curl_exec($curl);
-                curl_close($curl);
+        if ($request->ajax()) {
+            $query = AllUser::query();
+            if ($request->username !== null) {
+                $query->where('name', 'like', '%' . $request->username . '%');
             }
-
-
+            if ($request->email !== null) {
+                $query->where('email', 'like', '%' . $request->email . '%');
+            }
+            if ($request->search_car_number !== null) {
+                $query->where('car_number', 'like', '%' . $request->search_car_number . '%');
+            }
+            if ($request->search_user_type !== null) {
+                $query->where('user_type', $request->search_user_type);
+            }
+            if ($request->search_activation_type !== null) {
+                $query->where('expair_status', $request->search_activation_type);
+            }
+            if ($request->search_payment_status !== null) {
+                $query->where('payment_status', $request->search_payment_status);
+            }
+            if ($request->mobile !== null) {
+                $query->where('phone', $request->mobile);
+            }
+            if ($request->ref_id !== null) {
+                $query->where('id', $request->ref_id);
+            }
+            $query->select('all_users.phone as mobile');
+            $result = $query->get();
+            foreach ($result as $res) {
+                $mobile_number[] = $res['mobile'];
+            }
+            
+            send_sms($request->sms, $mobile_number); 
         }
-
-
-        Toastr::success('Sms Send Successfully', 'Success');
-        return redirect()->back();
+        
+        return response()->json(['success' => 'Done']);
     }
-
 
     public function single_sms(Request $request)
     {

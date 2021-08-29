@@ -269,15 +269,11 @@ class TechnicianController extends Controller
         
         $technician_id = $request->technician_id;
         $user_id = $request->user_id;
-
-        $user_details = AllUser::find($user_id);
-        $technician_details = Technician::find($technician_id);
         
         $assign_tecnician = new Assign_technician_device();
         $assign_tecnician->technician_id = $technician_id;
         $assign_tecnician->user_id = $user_id;
-        $assign_tecnician->order_id = $request->order_id;
-        $assign_tecnician->collect_amount = $request->collect_amount;
+        $assign_tecnician->note = $request->assign_reason;
         $assign_tecnician->save();
 
         return response()->json(['success' => 'Done']);
@@ -286,43 +282,23 @@ class TechnicianController extends Controller
 
     public function order_cancel(Request $request)
     {
-        $assign_tech_id = Assign_technician_device::find($request->assign_id);
-
-        $given_device = technician_device_stock::where('assign_id', $request->assign_id)->get();
-
-        if (count($given_device) == 0) {
-            $assign_tech_id->status = 2;
-            $assign_tech_id->note = $request->note;
-            $assign_tech_id->update();
-
-
-        } else {
-            foreach ($given_device as $data) {
-                $device = Device::find($data->device_id);
-                $device->quantity = $device->quantity + $data->quantity;
-                $device->update();
-
-                $data->quantity = 0;
-                $data->update();
-            }
-            $assign_tech_id->status = 2;
-            $assign_tech_id->note = $request->note;
-            $assign_tech_id->update();
-
-
-        }
-
-        $user = AllUser::find($assign_tech_id->user_id);
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your order not completed.  If you need any further information please contact our care number ( 01713546487).') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-        $resp = curl_exec($curl);
-        curl_close($curl);
-
-        Toastr::success('Order cancellation  Successfully :)', 'Success');
+        $assign_tecnician = Assign_technician_device::find($request->assign_id);
+        $assign_tecnician->note = $request->note;
+        $assign_tecnician->status = 2;
+        $assign_tecnician->update();
+        
+        Toastr::error('Order cancellation  Successfully :)', 'Success');
         return redirect()->back();
-
-
+    }
+    
+    public function confirm_complain($id)
+    {
+        $assign_tecnician = Assign_technician_device::find($id);
+        $assign_tecnician->status = 1;
+        $assign_tecnician->update();
+        
+        Toastr::success('Order Confiramed  Successfully :)', 'Success');
+        return redirect()->back();
     }
 
 

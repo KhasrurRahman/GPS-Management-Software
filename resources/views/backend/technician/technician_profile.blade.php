@@ -1,7 +1,6 @@
 @extends('backend.layout.app')
 @section('title','Technician Profile')
 @push('css')
-    <!-- DataTables -->
     <link rel="stylesheet" href="{{asset('public/assets/backend/plugins/datatables-bs4/css/dataTables.bootstrap4.css')}}">
 @endpush
 @section('main_menu','HOME')
@@ -34,7 +33,7 @@
                                         <tr>
                                             <th>Id</th>
                                             <th>Assign For</th>
-                                            <th>Device Uses</th>
+                                            <th>Assign reason</th>
                                             <th>Assigned Time</th>
                                             <th>Status</th>
                                             <th>Notes</th>
@@ -52,24 +51,14 @@
                                                     <a href="{{route('admin.all_user.show',$user_name->id)}}">{{$user_name->name}}</a>
                                                 </td>
                                                 <td>
-                                                    @php($devices=\App\technician_device_stock::where('assign_id',$technician_history_data->id)->get())
-                                                    @if(count($devices) == 0)
-                                                        <span>only for repair</span>
-                                                    @else
-
-                                                        @foreach($devices as $key=>$devices_data)
-                                                            {{$key+1}}. <span class="right badge badge-success">{{$devices_data->device_model}}</span>
-                                                            -> {{$devices_data->quantity}} Peace <br>
-                                                        @endforeach
-                                                    @endif
-
+                                                    {{$technician_history_data->note}}
                                                 </td>
                                                 <td>{{$technician_history_data->created_at->diffForHumans()}}</td>
                                                 <td>
                                                     @if($technician_history_data->status == 0)
                                                         <span class="right badge badge-danger">incomplete</span>
                                                     @elseif($technician_history_data->status == 2)
-                                                        <span class="right badge badge-warning">Not Completed</span>
+                                                        <span class="right badge badge-warning">Canceled</span>
                                                     @else
                                                         <span class="right badge badge-success">Complete</span>
                                                     @endif
@@ -86,29 +75,20 @@
                                                 <td>
                                                     @if($technician_history_data->status == 1)
                                                         <button class="btn btn-info btn-sm" href="#" disabled>
-                                                            <i class="fas fa-pencil-alt">
-                                                            </i>
-                                                            Update
+                                                            Confirm
                                                         </button>
 
                                                     @elseif($technician_history_data->status == 2)
                                                         <button class="btn btn-info btn-sm" href="#" disabled>
-                                                            <i class="fas fa-pencil-alt">
-                                                            </i>
-                                                            Update
+                                                            Confirm
                                                         </button>
                                                     @else
-                                                        <a class="btn btn-info btn-sm" href="#" onclick="complete_model({{$technician_history_data->id}})">
-                                                            <i class="fas fa-pencil-alt">
-                                                            </i>
-                                                            Update
+                                                        <a class="btn btn-info btn-sm" href="{{route('admin.confirm_complain',$technician_history_data->id)}}" >
+                                                            Confirm
                                                         </a>
 
-                                                        <a class="btn btn-danger btn-sm" href="#" data-toggle="modal" data-target="#cancel_order"
-                                                           onclick="pass_id_to_cancel_mocel({{$technician_history_data->id}})">
-                                                            <i class="fas fa-pencil-alt">
-                                                            </i>
-                                                            cancel
+                                                        <a class="btn btn-danger btn-sm" href="#"
+                                                           onclick="pass_id_to_cancel_mocel({{$technician_history_data->id}})">cancel
                                                         </a>
 
                                                     @endif
@@ -123,7 +103,7 @@
                                         <tr>
                                             <th>Id</th>
                                             <th>Assign For</th>
-                                            <th>Device Uses</th>
+                                            <th>Assign reason</th>
                                             <th>Assigned Time</th>
                                             <th>Status</th>
                                             <th>Notes</th>
@@ -132,15 +112,11 @@
                                         </tfoot>
                                     </table>
                                 </div>
-                                <!-- /.card-body -->
                             </div>
-                            <!-- /.card -->
-
                         </div>
                     </div>
                 </div>
-
-
+                
                 <div class="col-md-4">
                     <!-- Widget: user widget style 2 -->
                     <div class="card card-widget widget-user-2">
@@ -180,61 +156,10 @@
                     </div>
                     <!-- /.widget-user -->
                 </div>
-
-
-            </div>
-        </div>
-        <!-- /.card-body -->
-    </div>
-
-
-
-
-
-
-
-    {{--    completation model--}}
-    <!-- Modal -->
-    <div class="modal fade" id="complete" tabindex="-1" role="dialog" aria-labelledby="completeLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <form action="{{route('admin.conpletation')}}" method="post">
-                    @CSRF
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="completeLabel">Assign Technician</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">Close</span>
-                        </button>
-                    </div>
-                    <div class="col-12">
-                        <label for="exampleFormControlSelect1">Sell price/ Collected Amount</label>
-                        <input type="text" name="sell_price" placeholder="Sell price" class="form-control name_list" required/>
-                        <input type="hidden" name="assign_id" class="form-control name_list" id="assign_id"/>
-                    </div>
-                    <div class="col-12">
-                        <label for="exampleFormControlSelect1">Installation Cost</label>
-                        <input type="number" name="installation_cost" placeholder="Installation Cost" class="form-control name_list" required/>
-                    </div>
-
-                    <div class="modal-body" id="tabel">
-
-                        <table class="table table-bordered" id="dynamic_field">
-
-                        </table>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" onclick="">Save changes</button>
-                    </div>
-
-                </form>
-
             </div>
         </div>
     </div>
-
-    <!-- cancilation model -->
+    
     <div class="modal fade" id="cancel_order" tabindex="-1" role="dialog" aria-labelledby="cancel_orderLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -246,12 +171,17 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+
                     <div class="modal-body">
-                        ...
+                        <div class="form-group">
+                            <label for="exampleFormControlTextarea1">Reason</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="assign_reason"></textarea>
+                        </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="cancel(5)">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -261,7 +191,6 @@
 
 @endsection
 @push('js')
-    <!-- DataTables -->
     <script src="{{asset('public/assets/backend/plugins/datatables/jquery.dataTables.js')}}"></script>
     <script src="{{asset('public/assets/backend/plugins/datatables-bs4/js/dataTables.bootstrap4.js')}}"></script>
     <script>
@@ -276,91 +205,8 @@
                 "autoWidth": false,
             });
         });
-    </script>
 
 
-
-
-
-
-    <script>
-
-        function complete_model(task_id) {
-            $.ajax({
-                type: 'GET',
-                url: '/admin/ajax_assign_devices/' + task_id,
-                success: function (data) {
-                    if (!data.devices[0]) {
-                        console.log('no data');
-                        var out = '<table class="table table-bordered">';
-                        $.each(data.devices, function (key, value) {
-                            out += '';
-                        });
-                        out += '</table>';
-                        $("#tabel").html(out);
-                        $('#complete').modal('show');
-                    } else {
-                        var out = '<table class="table table-bordered"><label for="">Device use</label>';
-                        $.each(data.devices, function (key, value) {
-                            var device_id = value.device_id;
-
-                            out += '<tr class="dynamic-added"><input type="hidden" name="device_id[]" placeholder="Enter Quantity" class="form-control name_list" value="' + value.device_id + '"/><input type="hidden" name="stock_id[]" placeholder="Enter Quantity" class="form-control name_list" value="' + value.id + '"/><td><input type="text" placeholder="Enter Quantity" class="form-control name_list" value="' + value.device_model + '"/><td><input type="number" name="quantity[]" placeholder="Enter Quantity" class="form-control name_list" value="' + value.quantity + '" max="' + value.quantity + '" required/></td></tr>';
-                        });
-                        out += '</table>';
-                        $("#tabel").html(out);
-                        $('#complete').modal('show');
-                    }
-                },
-                error: function (data) {
-                }
-            });
-
-            document.getElementById('assign_id').value = task_id;
-        }
-
-    </script>
-
-    
-    
-    
-    
-    
-    
-    
-    <script type="text/javascript">
-        function cancel(id) {
-            const swalWithBootstrapButtons = swal.mixin({
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-            })
-            swalWithBootstrapButtons({
-                title: 'Are you sure Want to cancel it?',
-                text: "You won't be able to revert this!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Cancel it!',
-                cancelButtonText: 'No, cancel!',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    event.preventDefault();
-                    document.getElementById('cencel_form').submit();
-                } else if (
-                    // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ) {
-                    swalWithBootstrapButtons(
-                        'Cancelled',
-                        'Your data is safe :)',
-                        'error'
-                    )
-                }
-            })
-        }
-    </script>
-
-    <script>
         function pass_id_to_cancel_mocel(id) {
             console.log(id);
             var out = '<div class="form-group"><label for="exampleInputPassword1">What Is The Reason?</label><input type="text" class="form-control" name="note"><input type="hidden" class="form-control" name="assign_id" value="' + id + '"></div>';

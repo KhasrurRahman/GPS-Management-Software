@@ -141,7 +141,7 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::post('technician_assign', 'TechnicianController@technician_assign')->name('technician_assign');
     Route::post('conpletation', 'TechnicianController@conpletation')->name('conpletation');
     Route::post('order_cancel', 'TechnicianController@order_cancel')->name('order_cancel');
-    Route::get('ajax_assign_devices/{id}', 'TechnicianController@ajax_assign_devices')->name('ajax_assign_devices');
+    Route::get('confirm_complain/{id}', 'TechnicianController@confirm_complain')->name('confirm_complain');
 
     //device
     Route::resource('device', 'DeviceController');
@@ -190,10 +190,9 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
 
 
     //sms
-    Route::get('sms/send_personal_sms/{id}', 'SmsController@send_personal_sms')->name('send_personal_sms');
-    Route::get('sms/send_sms_to_due_user', 'SmsController@send_sms_to_due_user')->name('send_sms_to_due_user');
-    Route::get('sms/over_due_sms', 'SmsController@over_due_sms')->name('over_due_sms');
     Route::post('sms/single_sms', 'SmsController@single_sms')->name('single_sms');
+    Route::post('sms/send_sms_to_selected_user', 'SmsController@send_sms_to_selected_user')->name('send_sms_to_selected_user');
+    Route::get('sms/send_sms_to_selected_user_view', 'SmsController@send_sms_to_selected_user_view')->name('send_sms_to_selected_user_view');
 
     //all_complain
     Route::get('all_complain', 'ComplainController@all_complain')->name('all_complain');
