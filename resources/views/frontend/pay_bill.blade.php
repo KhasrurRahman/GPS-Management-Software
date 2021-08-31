@@ -102,15 +102,15 @@
                                 $('#message').text('User matched');
                                 $('#payment_button').show();
                                 a = document.getElementById('form');
-                                a.setAttribute("action", "/bill_payment_pay/"+data.user.id);
+                                a.setAttribute("action", "bill_payment_pay/"+data.user.id);
                                 document.getElementById('user_id').value = data.user.id;
                                 document.getElementById('monthly_bill').value = data.user.monthly_bill;
                                 $("#show_bill").empty();
                                 document.getElementById('show_bill').append('Your Mothly Bill: '+data.user.monthly_bill);
                                 $("#show_due_month").empty();
-                                document.getElementById('show_due_month').append('Number Of Due Months: '+data.due_month);
+                                document.getElementById('show_due_month').append('Number Of Due Months: '+data.fast_due_month+'-'+data.last_due_month);
                                 $("#total_due").empty();
-                                document.getElementById('total_due').append('Your Total Due: '+data.due_month * data.user.monthly_bill);
+                                document.getElementById('total_due').append('Your Total Due: '+data.total_due_month * data.user.monthly_bill);
                             }else{
                                 $('.loader').show();
                                 setTimeout(function() { $('.loader').hide(); }, 500);

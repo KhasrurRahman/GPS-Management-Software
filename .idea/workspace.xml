@@ -141,8 +141,13 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../til_billing" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/backend/history" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Xampp\htdocs\GPS-Management-Software\resources\views\backend\history" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -160,6 +165,9 @@
       <workItem from="1629222350209" duration="6438000" />
       <workItem from="1629229092525" duration="1464000" />
       <workItem from="1630042938033" duration="1790000" />
+      <workItem from="1630246573128" duration="9957000" />
+      <workItem from="1630419305119" duration="35000" />
+      <workItem from="1630425130532" duration="8574000" />
     </task>
     <servers />
   </component>

@@ -195,12 +195,23 @@ class HomeController2 extends Controller
               {
                     $data2 = AllUser::where('user_id', $data1->first()->id)->get()->first();
 
-                    $previous_due_history = payment_history::where('user_id',$data2->id)->where('payment_status',0)->get();
-                    $number_of_due_month = $previous_due_history->count();
+                    $previous_due_history = payment_history::where('user_id',$data2->id)->where('payment_status',0)->latest()->get();
+                    
+                    if ($previous_due_history->count() !== 0){
+                        $number_of_due_first_month = date("F", strtotime($previous_due_history->last()->month_name));
+                        $number_of_due_last_month = date("F", strtotime($previous_due_history->first()->month_name));
+                    }else{
+                        $number_of_due_first_month = '  ';
+                        $number_of_due_last_month = '  ';
+                    }
+                    
+                    
 
                     $data = array(
                        'user'  => $data2,
-                       'due_month'  => $number_of_due_month
+                       'fast_due_month'  => $number_of_due_first_month,
+                       'last_due_month'  => $number_of_due_last_month,
+                       'total_due_month'  => $previous_due_history->count(),
                       );
 
                     return Response($data);

@@ -102,14 +102,7 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::get('contact','AdminDashboardController@contact')->name('contact');
     Route::post('contact_save','AdminDashboardController@contact_save')->name('contact_save');
     Route::get('contact_delete/{id}','AdminDashboardController@contact_delete')->name('contact_delete');
-
-    //bill_schedule
-    Route::get('bill_schedule/calendar','BillScheduleController@calendar')->name('calendar');
-    Route::post('bill_schedule/calendar_search','BillScheduleController@calendar_search')->name('calendar_search');
-    Route::get('bill_schedule/bill_schedule','BillScheduleController@bill_schedule')->name('bill_schedule');
-    Route::get('bill_schedule/all_bill_schedule','BillScheduleController@all_bill_schedule')->name('all_bill_schedule');
-    Route::post('bill_schedule/rebill_schedule','BillScheduleController@rebill_schedule')->name('rebill_schedule');
-
+    
     //all user
     Route::resource('all_user', 'All_usercontroller');
     Route::get('user_delete/{id}', 'All_usercontroller@user_delete')->name('user_delete');
@@ -251,9 +244,6 @@ Route::group(['as'=>'user.','prefix'=>'user','namespace'=>'User','middleware'=>[
 
 
 // SSLCOMMERZ Start
-Route::get('/example1', 'SslCommerzPaymentController@exampleEasyCheckout')->name('cash_out_page');
-Route::get('/example2', 'SslCommerzPaymentController@exampleHostedCheckout');
-
 Route::post('/pay', 'SslCommerzPaymentController@index')->name('ssl_pay');
 Route::post('/guest_user_register_order/{id}', 'SslCommerzPaymentController@guest_user_register_order')->name('guest_user_register_order');
 Route::post('/bill_payment_pay/{id}', 'SslCommerzPaymentController@bill_payment_pay')->name('bill_payment_pay');
