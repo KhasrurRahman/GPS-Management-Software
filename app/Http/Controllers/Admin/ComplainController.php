@@ -7,13 +7,40 @@ use App\Complain;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
 
 class ComplainController extends Controller
 {
     public function all_complain()
     {
-        $complain = Complain::latest()->get();
-        return view('backend.complain.complain',compact('complain'));
+        return view('backend.complain.complain');
+    }
+
+    public function complain_search(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Complain::query();
+            $query->orderBy('created_at', 'DESC');
+            return Datatables::of($query)
+                ->setTotalRecords($query->count())
+                ->addIndexColumn()
+                ->addColumn('name', function ($data) {
+                    return $data->name;
+                })->addColumn('email', function ($data) {
+                    return $data->email;
+                })->addColumn('phone', function ($data) {
+                    return $data->phone;
+                })->addColumn('complain', function ($data) {
+                    return $data->complain;
+                })->addColumn('time', function ($data) {
+                    return date("d-M-y h:i A", strtotime($data->created_at));
+                })->addColumn('action', function ($data) {
+                    $action_button = $data->status !== 'Solved' ? '<a class="btn btn-success btn-sm" href="' . url('admin/solve_complain/' . $data->id) . '">Solve it</a>' : '<a class="btn btn-info btn-sm disabled" href="">Solved</a>';
+                    return $action_button;
+                })
+                ->rawColumns(['name', 'email', 'phone', 'complain', 'time', 'action'])
+                ->make(true);
+        }
     }
 
     public function solve_complain($id)
@@ -29,7 +56,7 @@ class ComplainController extends Controller
 //        $resp = curl_exec($curl);
 //        curl_close($curl);
 
-        Toastr::success('Complain solved Successfully','Success');
+        Toastr::success('Complain solved Successfully', 'Success');
         return redirect()->back();
     }
 }

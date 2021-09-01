@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AllUser;
 use App\Assign_technician_device;
+use App\Complain;
 use App\Contact_info;
 use App\Feature;
 use App\HappyClient;
@@ -30,12 +31,27 @@ class HomeController2 extends Controller
         $feature = Feature::latest()->get();
         $happy_client = HappyClient::latest()->get();
 
-        return view('home',compact('price','feature','happy_client'));
+        return view('home', compact('price', 'feature', 'happy_client'));
     }
+
     public function contact()
     {
         $contact = Contact_info::all();
-        return view('contact',compact('contact'));
+        return view('contact', compact('contact'));
+    }
+
+    public function user_complain_save(Request $request)
+    {
+        $complain = new Complain();
+        $complain->name = $request->name;
+        $complain->phone = $request->phone;
+        $complain->email = $request->email;
+        $complain->status = "pending";
+        $complain->complain = $request->complain;
+        $complain->save();
+
+        Toastr::success('Our Team will contact with you soon', 'Successfully palce');
+        return redirect()->back();
     }
 
     public function user_registration()
@@ -45,16 +61,14 @@ class HomeController2 extends Controller
 
     public function user_registration_store(Request $request)
     {
-              $validator =   $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255',],
-                'password' => ['required', 'string', 'min:4', 'confirmed'],
-                'phone' => ['required','unique:users'],
-                'car_model' => 'required',
-                'par_add' => 'required',
-         ]);
-
-
+        $validator = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255',],
+            'password' => ['required', 'string', 'min:4', 'confirmed'],
+            'phone' => ['required', 'unique:users'],
+            'car_model' => 'required',
+            'par_add' => 'required',
+        ]);
 
 
         $for_user_table = new User();
@@ -87,8 +101,8 @@ class HomeController2 extends Controller
         $user->total_paied = $request->total_paied;
         $user->save();
 
-        Toastr::success('You have Successfully registered ','Registration Successfull');
-         return redirect()->route('user_login')->with('message','You have Successfully registered');
+        Toastr::success('You have Successfully registered ', 'Registration Successfull');
+        return redirect()->route('user_login')->with('message', 'You have Successfully registered');
 
     }
 
@@ -99,62 +113,63 @@ class HomeController2 extends Controller
     }
 
 
+    public function update_user_info(Request $request, $id)
+    {
 
-    public function update_user_info(Request $request,$id){
+        $main_user_table = User::find($id);
 
-           $main_user_table = User::find($id);
+        if ($request->phone == $main_user_table->phone) {
 
-           if ($request->phone == $main_user_table->phone){
-
-               $main_user_table->phone = $request->phone;
-               $main_user_table->name = $request->name;
-               $main_user_table->email = $request->email;
-               $main_user_table->update();
-
-
-               $old_user_table = AllUser::where('user_id',$id)->first();
-               $old_user_table->phone = $request->phone;
-               $old_user_table->name = $request->name;
-               $old_user_table->email = $request->email;
-               $old_user_table->par_add = $request->par_add;
-               $old_user_table->update();
-
-               Toastr::success('Account Information updated Successfully','Success');
-               return redirect()->back()->with('message','Account Information updated Successfully');
-           }
+            $main_user_table->phone = $request->phone;
+            $main_user_table->name = $request->name;
+            $main_user_table->email = $request->email;
+            $main_user_table->update();
 
 
-           $validator =   $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'phone' => ['required','unique:users'],
-            ]);
+            $old_user_table = AllUser::where('user_id', $id)->first();
+            $old_user_table->phone = $request->phone;
+            $old_user_table->name = $request->name;
+            $old_user_table->email = $request->email;
+            $old_user_table->par_add = $request->par_add;
+            $old_user_table->update();
+
+            Toastr::success('Account Information updated Successfully', 'Success');
+            return redirect()->back()->with('message', 'Account Information updated Successfully');
+        }
 
 
-           $main_user_table->phone = $request->phone;
-           $main_user_table->name = $request->name;
-           $main_user_table->email = $request->email;
-           $main_user_table->update();
+        $validator = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'unique:users'],
+        ]);
 
 
-           $old_user_table = AllUser::where('user_id',$id)->first();
-           $old_user_table->phone = $request->phone;
-           $old_user_table->name = $request->name;
-           $old_user_table->email = $request->email;
-           $old_user_table->par_add = $request->par_add;
-           $old_user_table->update();
+        $main_user_table->phone = $request->phone;
+        $main_user_table->name = $request->name;
+        $main_user_table->email = $request->email;
+        $main_user_table->update();
 
-           Toastr::success('Account Information updated Successfully','Success');
-           return redirect()->back()->with('message','Account Information updated Successfully');
+
+        $old_user_table = AllUser::where('user_id', $id)->first();
+        $old_user_table->phone = $request->phone;
+        $old_user_table->name = $request->name;
+        $old_user_table->email = $request->email;
+        $old_user_table->par_add = $request->par_add;
+        $old_user_table->update();
+
+        Toastr::success('Account Information updated Successfully', 'Success');
+        return redirect()->back()->with('message', 'Account Information updated Successfully');
 
     }
 
     public function price_list()
     {
         $price = Price_categaroy::all();
-        return view('frontend.price_list',compact('price'));
+        return view('frontend.price_list', compact('price'));
     }
 
-    public function post_complain(Request $request){
+    public function post_complain(Request $request)
+    {
 
     }
 
@@ -162,14 +177,14 @@ class HomeController2 extends Controller
     public function feature()
     {
         $feature = Feature::latest()->get();
-        return view('frontend.feature',compact('feature'));
+        return view('frontend.feature', compact('feature'));
     }
 
     public function our_devices()
     {
         $device = TrackingDevice::latest()->get();
         $feature = Feature::latest()->get();
-        return view('frontend.devices',compact('device','feature'));
+        return view('frontend.devices', compact('device', 'feature'));
     }
 
     public function map()
@@ -184,65 +199,59 @@ class HomeController2 extends Controller
 
     public function phone_number_search(Request $request)
     {
-            $query = $request->get('query');
-             if($query !== '')
-             {
-              $phone = $request->get('query');
-              $data1 = User::where('phone', $phone)->get();
-              $data_count = User::where('phone', $phone)->count();
+        $query = $request->get('query');
+        if ($query !== '') {
+            $phone = $request->get('query');
+            $data1 = User::where('phone', $phone)->get();
+            $data_count = User::where('phone', $phone)->count();
 
-              if($data_count > 0)
-              {
-                    $data2 = AllUser::where('user_id', $data1->first()->id)->get()->first();
+            if ($data_count > 0) {
+                $data2 = AllUser::where('user_id', $data1->first()->id)->get()->first();
 
-                    $previous_due_history = payment_history::where('user_id',$data2->id)->where('payment_status',0)->latest()->get();
-                    
-                    if ($previous_due_history->count() !== 0){
-                        $number_of_due_first_month = date("F", strtotime($previous_due_history->last()->month_name));
-                        $number_of_due_last_month = date("F", strtotime($previous_due_history->first()->month_name));
-                    }else{
-                        $number_of_due_first_month = '  ';
-                        $number_of_due_last_month = '  ';
-                    }
-                    
-                    
+                $previous_due_history = payment_history::where('user_id', $data2->id)->where('payment_status', 0)->latest()->get();
 
-                    $data = array(
-                       'user'  => $data2,
-                       'fast_due_month'  => $number_of_due_first_month,
-                       'last_due_month'  => $number_of_due_last_month,
-                       'total_due_month'  => $previous_due_history->count(),
-                      );
+                if ($previous_due_history->count() !== 0) {
+                    $number_of_due_first_month = date("F", strtotime($previous_due_history->last()->month_name));
+                    $number_of_due_last_month = date("F", strtotime($previous_due_history->first()->month_name));
+                } else {
+                    $number_of_due_first_month = '  ';
+                    $number_of_due_last_month = '  ';
+                }
 
-                    return Response($data);
-              }
-              else
-              {
-                    $data = 'null';
-                    return Response($data);
-              }
-             }else{
-                 $data = 'null';
-                    return Response($data);
-             }
+
+                $data = array(
+                    'user' => $data2,
+                    'fast_due_month' => $number_of_due_first_month,
+                    'last_due_month' => $number_of_due_last_month,
+                    'total_due_month' => $previous_due_history->count(),
+                );
+
+                return Response($data);
+            } else {
+                $data = 'null';
+                return Response($data);
+            }
+        } else {
+            $data = 'null';
+            return Response($data);
+        }
 
     }
 
     public function online_payment($id)
     {
         $user = User::find($id);
-        $all_user = AllUser::where('user_id',$id)->first();
+        $all_user = AllUser::where('user_id', $id)->first();
 
-        $payment = payment_history::where('user_id',$all_user->id)->orderBy('id','desc')->get();
-        return view('frontend.payment_online',compact('all_user','payment'));
+        $payment = payment_history::where('user_id', $all_user->id)->orderBy('id', 'desc')->get();
+        return view('frontend.payment_online', compact('all_user', 'payment'));
     }
 
     public function single_page($id)
     {
         $page = Page::find($id);
-        return view('frontend.single_page',compact('page'));
+        return view('frontend.single_page', compact('page'));
     }
-
 
 
 }

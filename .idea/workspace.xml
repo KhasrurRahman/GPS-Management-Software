@@ -141,7 +141,8 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/backend/history" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../new" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -168,6 +169,7 @@
       <workItem from="1630246573128" duration="9957000" />
       <workItem from="1630419305119" duration="35000" />
       <workItem from="1630425130532" duration="8574000" />
+      <workItem from="1630466700565" duration="10961000" />
     </task>
     <servers />
   </component>

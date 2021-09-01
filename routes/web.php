@@ -31,6 +31,7 @@ Route::get('/clear_cache', function () {
 //frontend route
 Route::get('blank','Admin\AdminDashboardController@blank')->name('blank');
 Route::get('contact','HomeController2@contact')->name('contact');
+Route::post('user_complain_save','HomeController2@user_complain_save')->name('user_complain_save');
 Route::get('user_registration','HomeController2@user_registration')->name('user_registration');
 Route::post('user_registration_store','HomeController2@user_registration_store')->name('user_registration_store');
 Route::get('user_login','HomeController2@user_login')->name('user_login');
@@ -189,6 +190,7 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
 
     //all_complain
     Route::get('all_complain', 'ComplainController@all_complain')->name('all_complain');
+    Route::post('complain_search', 'ComplainController@complain_search')->name('complain_search');
     Route::get('solve_complain/{id}', 'ComplainController@solve_complain')->name('solve_complain');
 
     //WhatClientSaysController
@@ -248,14 +250,10 @@ Route::post('/pay', 'SslCommerzPaymentController@index')->name('ssl_pay');
 Route::post('/guest_user_register_order/{id}', 'SslCommerzPaymentController@guest_user_register_order')->name('guest_user_register_order');
 Route::post('/bill_payment_pay/{id}', 'SslCommerzPaymentController@bill_payment_pay')->name('bill_payment_pay');
 Route::post('/pay-via-ajax', 'SslCommerzPaymentController@payViaAjax')->name('pay_with_ajax');
-
 Route::post('/success', 'SslCommerzPaymentController@success');
 Route::post('/bill_payment_pay_success', 'SslCommerzPaymentController@bill_payment_pay_success')->name('bill_payment_pay_success');
 Route::post('/fail', 'SslCommerzPaymentController@fail');
 Route::post('/cancel', 'SslCommerzPaymentController@cancel');
-
 Route::post('/ipn', 'SslCommerzPaymentController@ipn');
-
-
 Route::get('/by_me', 'SslCommerzPaymentController@by_me')->name('by_me');
 //SSLCOMMERZ END
