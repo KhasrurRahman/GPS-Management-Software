@@ -10,6 +10,7 @@ use App\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 
 class HomeController_3 extends Controller
 {
@@ -39,8 +40,7 @@ class HomeController_3 extends Controller
             $for_user_table->role = 2;
             $for_user_table->type = 'user';
             $for_user_table->save();
-
-
+            
             $user = new AllUser();
             $user->name = $request->name;
             $user->phone = $request->phone;
@@ -57,29 +57,7 @@ class HomeController_3 extends Controller
             $user->next_payment_date = '-';
             $user->save();
 
-            $payments = new Payment();
-            $payments->name = $user->name;
-            $payments->user_id = $user->user_id;
-            $payments->email = $user->email;
-            $payments->phone = $user->phone;
-            $payments->amount = $package->monthly_charge + $package->device_price;
-            $payments->status = 'Processing';
-            $payments->address = $user->par_add;
-            $payments->transaction_id = uniqid();
-            $payments->currency = 'BDT';
-            $payments->save();
-
-            $order = new order();
-            $order->user_id = $for_user_table->id;
-            $order->order_status = 0;
-            $order->payment_status = 'completed';
-            $order->package_id = $id;
-            $order->transaction_id  =$payments->id;
-            $order->save();
-
-
-            Toastr::success('New Order created Successfully','Success');
-            return redirect()->route('user_login');
+            Route::post('bill_payment_pay', array('uses' => 'YourcontrollerController@yourmethod'));
     }
 
     public function guest_user_registration(Request $request)

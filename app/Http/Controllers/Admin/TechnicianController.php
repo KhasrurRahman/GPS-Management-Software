@@ -266,15 +266,30 @@ class TechnicianController extends Controller
         $request->validate([
             'technician_id' => 'required',
         ]);
-        
+
         $technician_id = $request->technician_id;
         $user_id = $request->user_id;
-        
+
+        $user_details = AllUser::find($user_id);
+        $technician_details = Technician::find($technician_id);
+
         $assign_tecnician = new Assign_technician_device();
         $assign_tecnician->technician_id = $technician_id;
         $assign_tecnician->user_id = $user_id;
         $assign_tecnician->note = $request->assign_reason;
         $assign_tecnician->save();
+
+        $tech_mobile[] = $technician_details->phone();
+        $sms = 'Assign for: Repair
+Name: ' . $user_details->name . '
+M: ' . $user_details->phone . '
+A: ' . $user_details->par_add . '';
+        
+        send_sms($sms,$tech_mobile);
+        
+        $user_mobile[] = $user_details->phone;
+        $sms = 'We have received your Complain. Your Problem solved by ( '.$technician_details->name.' ). Phone: '.$technician_details->phone.'.';
+        send_sms($sms,$user_mobile);
 
         return response()->json(['success' => 'Done']);
     }
@@ -286,17 +301,17 @@ class TechnicianController extends Controller
         $assign_tecnician->note = $request->note;
         $assign_tecnician->status = 2;
         $assign_tecnician->update();
-        
+
         Toastr::error('Order cancellation  Successfully :)', 'Success');
         return redirect()->back();
     }
-    
+
     public function confirm_complain($id)
     {
         $assign_tecnician = Assign_technician_device::find($id);
         $assign_tecnician->status = 1;
         $assign_tecnician->update();
-        
+
         Toastr::success('Order Confiramed  Successfully :)', 'Success');
         return redirect()->back();
     }

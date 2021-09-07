@@ -13,7 +13,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex" style="border-bottom: 3px solid #4f5962">
             <div class="image">
-                <img src="{{asset("public/assets/backend/img/unnamed.png")}}" class="img-circle elevation-2"
+                <img src="{{asset("public/assets/backend/img/avatar5.png")}}" class="img-circle elevation-2"
                      alt="User Image">
             </div>
             <div class="info">
@@ -68,6 +68,73 @@
 
                     </ul>
                 </li>
+                
+                
+                 @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
+                    <li class="nav-item has-treeview {{Request::is('admin/sms*')?'menu-open': ''}}">
+                        <a href="#" class="nav-link {{Request::is('admin/sms*')?'active': ''}}">
+                            <i class="nav-icon fas fa-sms"></i>
+                            <p>
+                                Send Sms
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{route('admin.send_sms_to_selected_user_view')}}" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Send sms to user</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
+                
+                
+                <li class="nav-item {{Request::is('admin/all_complain*')?'menu-open': ''}}">
+                    <a href="{{route('admin.all_complain')}}"
+                       class="nav-link {{Request::is('admin/all_complain*')?'active': ''}}">
+                        <i class="nav-icon fas fa-comment" style="color: #4FC3F7"></i>
+                        <p>
+                            Complain
+                        </p>
+                    </a>
+                </li>
+                
+                
+                <li class="nav-item has-treeview {{Request::is('admin/history*')?'menu-open': ''}}">
+                    <a href="#" class="nav-link {{Request::is('admin/history*')?'active': ''}}">
+                        <i class="nav-icon fas fa-file-medical-alt" style="color: #7E3896"></i>
+                        <p>
+                            Transaction History
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{route('admin.device_sell_history')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Device Sell History</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{route('admin.billing_history')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Billing History</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{route('admin.payment_by_online')}}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Online Payment History</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
 
 
                 {{--                <li class="nav-item has-treeview {{Request::is('admin/corporate_user*')?'menu-open': ''}}{{Request::is('admin/individual_user*')?'menu-open': ''}}{{Request::is('admin/expire_user*')?'menu-open': ''}}{{Request::is('admin/paid_user*')?'menu-open': ''}}{{Request::is('admin/due_user*')?'menu-open': ''}}">--}}
@@ -143,12 +210,12 @@
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a href="{{route('admin.assigned_order')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Assigned Order</p>
-                            </a>
-                        </li>
+{{--                        <li class="nav-item">--}}
+{{--                            <a href="{{route('admin.assigned_order')}}" class="nav-link">--}}
+{{--                                <i class="far fa-circle nav-icon"></i>--}}
+{{--                                <p>Assigned Order</p>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
 
                     </ul>
                 </li>
@@ -178,37 +245,7 @@
                     </ul>
                 </li>
 
-
-                <li class="nav-item {{Request::is('admin/all_complain*')?'menu-open': ''}}">
-                    <a href="{{route('admin.all_complain')}}"
-                       class="nav-link {{Request::is('admin/all_complain*')?'active': ''}}">
-                        <i class="nav-icon fas fa-comment" style="color: #4FC3F7"></i>
-                        <p>
-                            Complain
-                        </p>
-                    </a>
-                </li>
-
-                @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')
-                    <li class="nav-item has-treeview {{Request::is('admin/sms*')?'menu-open': ''}}">
-                        <a href="#" class="nav-link {{Request::is('admin/sms*')?'active': ''}}">
-                            <i class="nav-icon fas fa-sms"></i>
-                            <p>
-                                Send Sms
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{route('admin.send_sms_to_selected_user_view')}}" class="nav-link">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Send sms to user</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-
+                
 
                 <li class="nav-item has-treeview {{Request::is('admin/device*')?'menu-open': ''}}">
                     <a href="#" class="nav-link {{Request::is('admin/device*')?'active': ''}}">
@@ -245,40 +282,7 @@
 
                     </ul>
                 </li>
-
-
-                <li class="nav-item has-treeview {{Request::is('admin/history*')?'menu-open': ''}}">
-                    <a href="#" class="nav-link {{Request::is('admin/history*')?'active': ''}}">
-                        <i class="nav-icon fas fa-file-medical-alt" style="color: #7E3896"></i>
-                        <p>
-                            Transaction History
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{route('admin.device_sell_history')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Device Sell History</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{route('admin.billing_history')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Billing History</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{route('admin.payment_by_online')}}" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Online Payment History</p>
-                            </a>
-                        </li>
-
-                    </ul>
-                </li>
+                
 
 
                 @if(\Illuminate\Support\Facades\Auth::user()->type == 'admin')

@@ -1,4 +1,4 @@
-@extends('backend.layout.app')
+\@extends('backend.layout.app')
 @section('title','Edit User')
 @push('css')
 @endpush
@@ -26,8 +26,8 @@
                     <input type="text" class="form-control" id="Name" placeholder="Enter email" name="name" value="{{$user->name}}">
                   </div>
                     <div class="form-group">
-                    <label for="exampleInputPassword1">Alternative Phone(If Any)</label>
-                    <input type="text" class="form-control" id="Phone" placeholder="Alternative Phone" name="alter_phone" value="{{$user->phone}}">
+                    <label for="exampleInputPassword1">Phone</label>
+                    <input type="text" class="form-control" id="Phone" placeholder="Alternative Phone" name="phone" value="{{$user->phone}}">
                   </div>
                     <div class="form-group">
                     <label for="exampleInputPassword1">Email</label>

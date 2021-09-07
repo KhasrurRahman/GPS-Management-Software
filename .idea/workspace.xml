@@ -133,6 +133,7 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1wixkQ48EaemmSeW98T4ZHZrjt6" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -140,7 +141,12 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../new" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -170,6 +176,17 @@
       <workItem from="1630419305119" duration="35000" />
       <workItem from="1630425130532" duration="8574000" />
       <workItem from="1630466700565" duration="10961000" />
+      <workItem from="1630508706468" duration="13907000" />
+      <workItem from="1630685690298" duration="596000" />
+      <workItem from="1630723375586" duration="12702000" />
+      <workItem from="1630738482406" duration="1340000" />
+      <workItem from="1630775816544" duration="5575000" />
+      <workItem from="1630811963147" duration="535000" />
+      <workItem from="1630817345686" duration="8161000" />
+      <workItem from="1630896187716" duration="4838000" />
+      <workItem from="1630903238428" duration="4667000" />
+      <workItem from="1630983223339" duration="1212000" />
+      <workItem from="1630984447761" duration="10000" />
     </task>
     <servers />
   </component>

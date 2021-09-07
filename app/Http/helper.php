@@ -1,12 +1,13 @@
 <?php
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Carbon;
 
 function send_sms($message, $mobile_number)
 {
     $params = [
         "api_token" => 'ratin-788f2c73-802d-4d90-987e-4ae9ff0cc3e4',
-        "sid" => 'SAFETYGPSMASK_1',
+        "sid" => 'SAFETYGPSMASK',
         "msisdn" => $mobile_number,
         "sms" => $message,
         "batch_csms_id" => '2934fe343'
@@ -66,7 +67,7 @@ function delete_user($email)
         $resp = curl_exec($curl);
         curl_close($curl);
     } else {
-        return 'user not find';
+        return 'user not found';
     }
 }
 
@@ -81,9 +82,10 @@ function user_objects($email)
 
 function deactive_user_objects($imei)
 {
+    $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now())->toDateString();
     foreach ($imei as $key => $value) {
         $curl = curl_init();
-        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',false,false,'));
+        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'https://safetyvts.com/api/api.php?api=server&ver=1.0&key=' . api_cinfig() . '&cmd=OBJECT_SET_ACTIVITY,' . $value . ',false,true,' . $expaire_date . ''));
         $resp = curl_exec($curl);
         curl_close($curl);
     }

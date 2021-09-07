@@ -8,6 +8,7 @@
 <script src="{{asset('public/assets/backend/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('public/assets/backend/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 <script src="{{asset('public/assets/backend/js/adminlte.js')}}"></script>
+<script src="{{asset('public/assets/backend/js/Chart.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 @stack('js')
 {!! Toastr::message() !!}

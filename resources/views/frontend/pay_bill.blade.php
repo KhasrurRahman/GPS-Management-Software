@@ -58,7 +58,7 @@
       <div class="modal-body">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Number Of Month</label>
-                    <input type="number" class="form-control" id="month" placeholder="Number Of Months" name="number_of_months" onkeyup="calculateAmount()">
+                    <input type="number" class="form-control" id="month" placeholder="Number Of Months" name="number_of_months" onkeyup="calculateAmount()" required min="1">
                     <input type="hidden" id="user_id" value="" name="user_id">
                     <input type="hidden" id="monthly_bill" value="">
                   </div>

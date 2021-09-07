@@ -31,6 +31,7 @@ Route::get('/clear_cache', function () {
 //frontend route
 Route::get('blank','Admin\AdminDashboardController@blank')->name('blank');
 Route::get('contact','HomeController2@contact')->name('contact');
+Route::get('dashboardreport/{type}','HomeController2@dashboardreport')->name('dashboardreport');
 Route::post('user_complain_save','HomeController2@user_complain_save')->name('user_complain_save');
 Route::get('user_registration','HomeController2@user_registration')->name('user_registration');
 Route::post('user_registration_store','HomeController2@user_registration_store')->name('user_registration_store');
@@ -99,7 +100,7 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     Route::post('team_save','AdminDashboardController@team_save')->name('team_save');
     Route::get('team_delete/{id}','AdminDashboardController@team_delete')->name('team_delete');
 
-    //    contact information
+    //  contact information
     Route::get('contact','AdminDashboardController@contact')->name('contact');
     Route::post('contact_save','AdminDashboardController@contact_save')->name('contact_save');
     Route::get('contact_delete/{id}','AdminDashboardController@contact_delete')->name('contact_delete');
@@ -107,11 +108,13 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     //all user
     Route::resource('all_user', 'All_usercontroller');
     Route::get('user_delete/{id}', 'All_usercontroller@user_delete')->name('user_delete');
+    Route::get('delete_user_permanently/{id}', 'All_usercontroller@delete_user_permanently')->name('delete_user_permanently');
     Route::post('search_user', 'All_usercontroller@search_user')->name('search_user');
     Route::post('monthly_bill_update/{id}', 'All_usercontroller@monthly_bill_update')->name('monthly_bill_update');
     Route::get('full_order_history/{id}', 'All_usercontroller@full_order_history')->name('full_order_history');
     Route::post('bill_schedule', 'All_usercontroller@bill_schedule');
     Route::post('user_note_save/{id}', 'All_usercontroller@user_note_save')->name('user_note_save');
+    Route::get('send_manual_message', 'All_usercontroller@send_manual_message')->name('send_manual_message');
     
     Route::get('active_user/{id}', 'All_usercontroller@active_user')->name('active_user');
 
@@ -172,6 +175,8 @@ Route::group(['as'=>'admin.','prefix'=>'admin','namespace'=>'Admin','middleware'
     //order
     Route::resource('order', 'OrderController');
     Route::get('assigned_order', 'OrderController@assigned_order')->name('assigned_order');
+    Route::post('order_search', 'OrderController@order_search')->name('order_search');
+    Route::get('complete_order/{id}', 'OrderController@complete_order')->name('complete_order');
     Route::get('custom_order', 'OrderController@custom_order')->name('custom_order');
 
 

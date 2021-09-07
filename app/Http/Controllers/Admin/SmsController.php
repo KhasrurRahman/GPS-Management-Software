@@ -27,7 +27,7 @@ class SmsController extends Controller
         ]);
 
         if ($request->ajax()) {
-            $query = AllUser::query();
+            $query = AllUser::where('status', null);
             if ($request->username !== null) {
                 $query->where('name', 'like', '%' . $request->username . '%');
             }
@@ -52,12 +52,23 @@ class SmsController extends Controller
             if ($request->ref_id !== null) {
                 $query->where('id', $request->ref_id);
             }
+
+            if ($request->schedule_status !== null) {
+                $query->whereHas('bill_schedule', function ($query2) use ($request) {
+                    $query2->where('user_id', '!=', 'asdasd');
+                });
+            }
+
+            if ($request->bill_schedule_date !== null) {
+                $query->whereHas('bill_schedule', function ($query2) use ($request) {
+                    $query2->where('date', $request->bill_schedule_date);
+                });
+            }
             $query->select('all_users.phone as mobile');
             $result = $query->get();
             foreach ($result as $res) {
                 $mobile_number[] = $res['mobile'];
             }
-            
             send_sms($request->sms, $mobile_number); 
         }
         
@@ -69,14 +80,10 @@ class SmsController extends Controller
         $request->validate([
             'personal_sms_body' => 'required',
         ]);
+        
+        $mobile_number [] = AllUser::find($request->user_id)->phone;
 
-//    $user = AllUser::find($id);
-//    $number_of_due_months = payment_history::where('user_id',$user->id)->where('payment_status',0)->get()->count();
-//            $curl = curl_init();
-//            curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Your monthly bill '.$number_of_due_months * $user->monthly_bill.' tk was due. Please pay the bill before the expair your connection. bkash- 01713546487. Use ref. Id- '.$user->id.'
-//            Safety GPS').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//            $resp = curl_exec($curl);
-//            curl_close($curl);
+        send_sms($request->personal_sms_body,$mobile_number);
 
         return response()->json(['success' => 'Done']);
     }

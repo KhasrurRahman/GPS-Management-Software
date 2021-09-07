@@ -29,6 +29,8 @@
                     d.search_user_type = $('#search_user_type').val();
                     d.search_activation_type = $('#search_activation_type').val();
                     d.search_payment_status = $('#search_payment_status').val();
+                    d.schedule_status = $('#schedule_status').val();
+                    d.bill_schedule_date = $('#bill_schedule_date').val();
                     d._token = '{{ csrf_token() }}'
                 }
             },
@@ -97,26 +99,28 @@
     // send sms to selected subscriber
         $('#send_selected_user_sms').on('submit', function (event) {
             event.preventDefault();
+            toastr.success('Sms send Successful', 'Successful');
             $.ajax({
                 url: "{{route('admin.send_sms_to_selected_user')}}",
                 type: "POST",
                 data: {
-                    user_id: $('#user_id').val(),
-                    mobile: $('#mobile').val(),
-                    rank_id: $('#rank_id').val(),
-                    area_id: $('#area_id_search').val(),
-                    building_id: $('#building_id_search').val(),
-                    package_id: $('#search_package_id').val(),
-                    house: $('#house').val(),
-                    category: $('#search_category').val(),
-                    status: $('#search_status').val(),
+                    username : $('#search_name').val(),
+                    mobile : $('#search_mobile').val(),
+                    email : $('#search_email').val(),
+                    ref_id : $('#search_ref_id').val(),
+                    search_car_number : $('#search_car_number').val(),
+                    search_user_type : $('#search_user_type').val(),
+                    search_activation_type : $('#search_activation_type').val(),
+                    search_payment_status : $('#search_payment_status').val(),
+                    schedule_status : $('#schedule_status').val(),
+                    bill_schedule_date : $('#bill_schedule_date').val(),
                     sms: $('#all_user_sms_body').val(),
                     _token: '{{csrf_token()}}'
                 },
                 success: function (response) {
-                    if (response) {
-                        toastr.success('Sms send Successfully', 'Send');
-                    }
+                    // if (response) {
+                    //     toastr.success('Sms send Successfully', 'Send');
+                    // }
                 },
                 error: function (response) {
                     if (response.responseJSON.errors.sms) {

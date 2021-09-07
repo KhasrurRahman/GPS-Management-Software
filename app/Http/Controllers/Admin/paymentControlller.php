@@ -25,6 +25,7 @@ class paymentControlller extends Controller
         $number_of_months = $request->number_of_months;
         $amount = $request->payment_this_date;
         $last_payment_date = $user->next_payment_date;
+        $mobile[] = $user->phone;
 
 
         if ($amount < (($user->monthly_bill) * $number_of_months)) {
@@ -56,12 +57,9 @@ class paymentControlller extends Controller
                 $admin_payment_confarmation_history->save();
                 Toastr::success('Payment status Successfully Updated', 'success');
 
-
-//        $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' month.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+                $sms = 'Thank for Your payment ' . (($user->monthly_bill) * $number_of_months) . 'Tk for ' . $number_of_months . ' month.
+Safety GPS Tracker';
+                send_sms($sms, $mobile);
 
 
             } elseif ($number_of_due_month == $number_of_months) {
@@ -86,12 +84,11 @@ class paymentControlller extends Controller
                 $admin_payment_confarmation_history->save();
 
 
-//         $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
-                
+                $sms = 'Thank for Your payment ' . (($user->monthly_bill) * $number_of_months) . 'Tk for ' . $number_of_months . ' months.
+Safety GPS Tracker';
+                send_sms($sms, $mobile);
+
+
                 Toastr::success('Payment status Successfully Updated', 'success');
             } elseif ($number_of_due_month < $number_of_months) {
                 $extra_payment_month = $number_of_months - $number_of_due_month;
@@ -123,11 +120,9 @@ class paymentControlller extends Controller
                     $admin_payment_confarmation_history->payment_for_month = $number_of_months;
                     $admin_payment_confarmation_history->save();
 
-//                    $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+                    $sms = 'Thank for Your payment ' . (($user->monthly_bill) * $number_of_months) . 'Tk for ' . $number_of_months . ' months.
+Safety GPS Tracker';
+                    send_sms($sms, $mobile);
 
                     Toastr::success('Payment status Successfully Updated', 'success');
 
@@ -168,11 +163,10 @@ class paymentControlller extends Controller
                     $admin_payment_confarmation_history->save();
 
 
-//                    $curl = curl_init();
-//        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Thank for Your payment '.(($user->monthly_bill)*$number_of_months).'Tk for '.$number_of_months.' months.
-//Safety GPS Tracker').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
-//        $resp = curl_exec($curl);
-//        curl_close($curl);
+                    $sms = 'Thank for Your payment ' . (($user->monthly_bill) * $number_of_months) . 'Tk for ' . $number_of_months . ' months.
+Safety GPS Tracker';
+                    send_sms($sms, $mobile);
+
 
                     Toastr::success('Payment status Successfully Updated', 'success');
                 }
@@ -216,16 +210,23 @@ class paymentControlller extends Controller
     private function active_user_object_after_payment($user_id)
     {
         $user = AllUser::find($user_id);
-        $email = 'ratin@gmail.com';
-        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->toDateString();
-        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth()->toDateString();
+        $email = $user->email;
+        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->addDay(10)->toDateString();
+        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now())->lastOfMonth()->addDay(10)->toDateString();
+        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now())->lastOfMonth()->toDateString();
         if ($user_last_active_payment_month >= $corrent_month) {
             $objects = json_decode(user_objects($email), true);
-            $all_object_array = array();
-            foreach ($objects as $objects_data) {
-                $all_object_array[] = $objects_data['imei'];
+            if (isset($objects)) {
+                $all_object_array = array();
+                foreach ($objects as $objects_data) {
+                    $all_object_array[] = $objects_data['imei'];
+                }
+                active_user_objects($all_object_array, $expaire_date);
+            } else {
+                Toastr::error('No Device Found', 'error');
+                return redirect()->back();
             }
-            active_user_objects($all_object_array, $user_last_active_payment_month);
+
         }
     }
 

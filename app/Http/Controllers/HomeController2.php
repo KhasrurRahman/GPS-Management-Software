@@ -19,6 +19,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 
@@ -44,10 +45,10 @@ class HomeController2 extends Controller
     {
         $complain = new Complain();
         $complain->name = $request->name;
-        $complain->phone = $request->phone;
+        $complain->phone = $request->mobile;
         $complain->email = $request->email;
         $complain->status = "pending";
-        $complain->complain = $request->complain;
+        $complain->description = $request->complain;
         $complain->save();
 
         Toastr::success('Our Team will contact with you soon', 'Successfully palce');
@@ -251,6 +252,33 @@ class HomeController2 extends Controller
     {
         $page = Page::find($id);
         return view('frontend.single_page', compact('page'));
+    }
+
+
+    public function dashboardreport($type)
+    {
+        if ($type == "onlinepayment") {
+            //        payment history last 30 days
+            $day_by_day_payment_history = DB::table('payments')->where('status', 'Processing')->select('amount', 'created_at')->whereDate('payments.created_at', '>', Carbon::now()->subYear(2))->get()->groupBy
+            (function ($grouped) {
+                return (new Carbon($grouped->created_at))->format('d/m/y');
+            });
+            foreach ($day_by_day_payment_history as $key => $value) {
+                $lebel[] = $key;
+                $data[] = $value->sum('amount');
+            }
+        } elseif ($type == "manual_payment") {
+            //        payment history last 30 days
+            $day_by_day_payment_history = DB::table('payment_confarmation_histories')->select('updated_amount', 'created_at')->whereDate('payment_confarmation_histories.created_at', '>', Carbon::now()->subDay(30))->get()->groupBy
+            (function ($grouped) {
+                return (new Carbon($grouped->created_at))->format('d/m/y');
+            });
+            foreach ($day_by_day_payment_history as $key => $value) {
+                $lebel[] = $key;
+                $data[] = $value->sum('updated_amount');
+            }
+        }
+        return Response::json(['lebel' => $lebel, 'data' => $data], 200);
     }
 
 

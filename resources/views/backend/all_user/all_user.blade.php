@@ -27,6 +27,7 @@
             @include('backend.all_user.search_user')
             <h3 class="card-title">Total: <span class="badge badge-secondary" id="total_data"></span></h3>
                 <a href="{{route('admin.all_user.create')}}" type="button" class="btn-sm btn-success float-right">Add User</a>
+                <a href="#" onclick="send_reminder_message()" type="button" class="btn-sm btn-warning float-right mr-2">Send Reminder Message</a>
         </div>
         <div class="card-body">
             <table class="table table-bordered yajra-datatable">

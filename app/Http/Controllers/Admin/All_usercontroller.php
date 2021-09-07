@@ -17,6 +17,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -295,12 +296,13 @@ class All_usercontroller extends Controller
         $for_user_table = User::find($user->user_id);
         $for_user_table->name = $request->name;
         $for_user_table->email = $request->email;
+        $for_user_table->phone = $request->phone;
         $for_user_table->password = Hash::make('123456');
         $for_user_table->update();
 
 
         $user->name = $request->name;
-        $user->alter_phone = $request->alter_phone;
+        $user->phone = $request->phone;
         $user->email = $request->email;
         $user->par_add = $request->par_add;
         $user->car_number = $request->car_number;
@@ -333,14 +335,28 @@ class All_usercontroller extends Controller
         $user->expair_status = 1;
         $user->update();
 
-        $payment_history = payment_history::where('user_id', $user->id)->where('payment_status', 0)->get()->count();
+        $previous_due_history = payment_history::where('user_id', $user->id)->where('payment_status', 0)->get();
+        if ($previous_due_history->count() !== 0) {
+            $number_of_due_first_month = date("F", strtotime($previous_due_history->last()->month_name));
+            $number_of_due_last_month = date("F", strtotime($previous_due_history->first()->month_name));
+        } else {
+            $number_of_due_first_month = '  ';
+            $number_of_due_last_month = '  ';
+        }
 
-        //        $curl = curl_init();
-        //        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is ' . $payment_history * $user->monthly_bill . 'tk for ' . $payment_history . ' months. If you need any further information please contact our care number ( 01713546487)') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-        //        $resp = curl_exec($curl);
-        //        curl_close($curl);
+        $total_due = $previous_due_history->count() * $user->monthly_bil;
+        $mobile[] = $user->phone;
+        $sms = "Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is $total_due tk from $number_of_due_first_month - $number_of_due_last_month. If you need any further information please contact our care number ( 01713546487)";
+        send_sms($sms,$mobile);
 
+        return response()->json(['success' => 'Done']);
+    }
 
+    public function delete_user_permanently($id)
+    {
+        $user = AllUser::findOrFail($id);
+        $user->status = "deleted";
+        $user->update();
         return response()->json(['success' => 'Done']);
     }
 
@@ -349,11 +365,10 @@ class All_usercontroller extends Controller
         $user = AllUser::findOrFail($id);
         $user->expair_status = 0;
         $user->update();
-
-        //        $curl = curl_init();
-        //        curl_setopt_array($curl, array(CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms=' . urlencode('Thank You for Your Payment,Your Connection is Now Active') . '&msisdn=88' . $user->phone . '&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request'));
-        //        $resp = curl_exec($curl);
-        //        curl_close($curl);
+        
+        $mobile[] = $user->phone;
+        $sms = "Thank You for Your Payment,Your Connection is Now Active";
+        send_sms($sms,$mobile);
 
         Toastr::success('Activated Successfully :)', 'Success');
         return redirect()->back();
@@ -557,7 +572,7 @@ class All_usercontroller extends Controller
     public function search_user(Request $request)
     {
         if ($request->ajax()) {
-            $query = AllUser::query();
+            $query = AllUser::where('status', null);
             if ($request->username !== null) {
                 $query->where('name', 'like', '%' . $request->username . '%');
             }
@@ -588,7 +603,7 @@ class All_usercontroller extends Controller
                     $query2->where('user_id', '!=', 'asdasd');
                 });
             }
-            
+
             if ($request->bill_schedule_date !== null) {
                 $query->whereHas('bill_schedule', function ($query2) use ($request) {
                     $query2->where('date', $request->bill_schedule_date);
@@ -636,13 +651,15 @@ class All_usercontroller extends Controller
                 ->addColumn('action', function ($data) {
                     $expair_status = $data->expair_status == 0 ? '<a class="dropdown-item" href="#" onclick="expier_user(' . $data->id . ')" >Expire</a>' : '<a class="dropdown-item" href="#" onclick="active_user(' . $data->id . ')">Active</a> ';
 
+                    $delete_user = '<a class="dropdown-item" href="#" onclick="delete_user(' . $data->id . ')" >Expire</a>';
+
                     $bill_schedule_status = $data->bill_schedule ? '<button type="button" id="mouse_hover" class="dropdown-item bg-pink" data-toggle="tooltip" data-placement="top" title="Scheduled at: ' . $data->bill_schedule->created_at . ', comment: ' . $data->bill_schedule->note . '">Scheduled </button> ' : ' <a class="dropdown-item" href="" data-toggle="modal" data-target="#bill_shedule" onclick="bill_user_id(' . $data->id . ')">Bill Schedule</a>';
 
                     $assign_technician = $data->assign_techician ? '' : ' <a class="dropdown-item" href="" data-toggle="modal" data-target="#assign_technician" onclick="user_id(' . $data->id . ')">Assign Technician</a>';
 
                     //                    $action_button = ' <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '"><i class="fas fa-edit"></i></a> ' . $expair_status . $bill_schedule_status . $assign_technician . ' <dropdown-item bg-pink" href="#" onclick="send_sms(' . $data->id . ')"><i class="fas fa-sms"></i></a>';
 
-                    $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="show_devices(' . $data->id . ')">Show Devices</a> <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a> </div> </div>';
+                    $action_button = '<div class="btn-group"> <button type="button" class="btn btn-sm dropdown-item dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: #0d8d2d;color: white;text-align: center"> Action </button> <div class="dropdown-menu dropdown-menu-right text-center"> <a class="dropdown-item" href="' . route('admin.all_user.edit', $data->id) . '">Edit User ' . $expair_status . $bill_schedule_status . $assign_technician . ' <a class="dropdown-item" href="#" onclick="show_devices(' . $data->id . ')">Show Devices</a> <a class="dropdown-item" href="#" onclick="open_send_sms_modal(' . $data->id . ')">Send Sms</a><a class="dropdown-item" href="#" onclick="delete_user(' . $data->id . ')" >Delete User</a> </div> </div>';
                     return $action_button;
                 })
                 ->rawColumns(['action', 'id', 'name', 'phone', 'email', 'car_number', 'monthly_bill', 'payment_status', 'note', 'assign_technician', 'expair_status'])
@@ -652,8 +669,8 @@ class All_usercontroller extends Controller
 
     public function show_devices($id)
     {
-        $user = User::find($id);
-        $email = 'ratin@gmail.com';
+        $user = AllUser::find($id);
+        $email = $user->email;
         if (check_user($email) == 'true') {
             $objects = json_decode(user_objects($email), true);
             //            return $objects;
@@ -671,7 +688,7 @@ class All_usercontroller extends Controller
                 'inactive' => $object_loop_inactive,
             ];
         } else {
-            return 'user not find';
+            return 'user not found';
         }
     }
 
@@ -691,4 +708,14 @@ class All_usercontroller extends Controller
         active_user_objects($request->active_object, $request->expaire_date);
         return response()->json(['success' => 'Done']);
     }
+    
+    public function send_manual_message()
+    {
+        Artisan::call('SendDueUserSms');
+        Artisan::call('queue:work');
+        return response()->json(['success' => 'Done']);
+    }
+    
+    
+    
 }

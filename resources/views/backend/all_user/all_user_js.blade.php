@@ -251,6 +251,90 @@
             }
         })
     }
+    
+    
+    function delete_user(id) {
+        const swalWithBootstrapButtons = swal.mixin({
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false,
+        })
+        swalWithBootstrapButtons({
+            title: 'Are you sure Want To Active this user?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Active it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'get',
+                    url: '{{ url('admin/delete_user_permanently') }}/' + id,
+                    success: function (response) {
+                        if (response) {
+                            toastr.success('Deleted Successful', 'Successful');
+                            $('.yajra-datatable').DataTable().ajax.reload(null, false);
+                        }
+                    }
+                });
+            } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons(
+                    'Cancelled',
+                    'Your data is safe :)',
+                    'error'
+                )
+            }
+        })
+    }
+    
+    
+    function send_reminder_message() {
+        const swalWithBootstrapButtons = swal.mixin({
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false,
+        })
+        swalWithBootstrapButtons({
+            title: 'Are you sure Want To Active this user?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Send!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                toastr.success('Sms send Successful', 'Successful');
+                event.preventDefault();
+                $.ajax({
+                    type: 'get',
+                    url: '{{ url('admin/send_manual_message') }}',
+                    success: function (response) {
+                        toastr.success('Sms send Successful', 'Successful');
+                        // console.log(response)
+                        // if (response) {
+                        //     toastr.success('Sms send Successful', 'Successful');
+                        // }
+                    }
+                });
+            } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons(
+                    'Cancelled',
+                    'Your data is safe :)',
+                    'error'
+                )
+            }
+        })
+    }
 
     // open sms model
     function open_send_sms_modal(id) {
@@ -339,7 +423,8 @@
             success: function (response) {
                 // console.log(response.active)
                 if (response == "user not found") {
-                    toastr.error('', 'Not Find');
+                    $('#all_object').modal('hide');
+                    toastr.error('', 'User Not Find');
                 } else {
                     $('#active_panel').html(response.active)
                     $('#inactive_panel').html(response.inactive)
@@ -385,6 +470,7 @@
             }
         });
     });
+    
 
 
     // action on inactive object
@@ -422,4 +508,7 @@
             }
         });
     });
+    
+    
+    
 </script>

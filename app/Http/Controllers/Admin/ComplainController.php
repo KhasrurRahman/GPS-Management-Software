@@ -31,7 +31,7 @@ class ComplainController extends Controller
                 })->addColumn('phone', function ($data) {
                     return $data->phone;
                 })->addColumn('complain', function ($data) {
-                    return $data->complain;
+                    return $data->description;
                 })->addColumn('time', function ($data) {
                     return date("d-M-y h:i A", strtotime($data->created_at));
                 })->addColumn('action', function ($data) {
@@ -48,9 +48,7 @@ class ComplainController extends Controller
         $complain = Complain::find($id);
         $complain->status = 'Solved';
         $complain->update();
-
-        $user = AllUser::find($complain->user_id);
-
+        
 //        $curl = curl_init();
 //        curl_setopt_array($curl, array( CURLOPT_RETURNTRANSFER => 1, CURLOPT_URL => 'http://sms.sslwireless.com/pushapi/dynamic/server.php?user=safetygps&pass=22p>7E36&sid=SafetyGPS&sms='.urlencode('Hi,'.$user->name.' this is to confirm that your technical issue has been resolved. If you have any questions, please contact us at 01713546487. Thank you.”').'&msisdn=88'.$user->phone.'&csmsid=123456789', CURLOPT_USERAGENT => 'Sample cURL Request' ));
 //        $resp = curl_exec($curl);

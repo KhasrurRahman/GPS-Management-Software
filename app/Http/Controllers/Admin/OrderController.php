@@ -14,6 +14,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
@@ -24,26 +25,23 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $all_user = AllUser::where('order_status',1)->latest()->get();
-        $orders = order::where('order_status',0)->where('payment_status','completed')->orwhere('payment_status','cash_on_delivery')->latest()->get();
-        $technician = Technician::all();
-        $device = Device::all();
+//        $all_user = AllUser::where('order_status',1)->latest()->get();
+//        $orders = order::where('order_status',0)->where('payment_status','completed')->orwhere('payment_status','cash_on_delivery')->latest()->get();
+//        $technician = Technician::all();
+//        $device = Device::all();
 
-        return view('backend.order.order',compact('all_user','orders','technician','device'));
+        return view('backend.order.order');
     }
-
-
-
 
 
     public function assigned_order()
     {
-        $all_user = AllUser::where('order_status',1)->latest()->get();
-        $orders = order::where('order_status',0)->where('payment_status','completed')->latest()->get();
+        $all_user = AllUser::where('order_status', 1)->latest()->get();
+        $orders = order::where('order_status', 0)->where('payment_status', 'completed')->latest()->get();
         $technician = Technician::all();
         $device = Device::all();
 
-        return view('backend.order.assigned_order',compact('all_user','orders','technician','device'));
+        return view('backend.order.assigned_order', compact('all_user', 'orders', 'technician', 'device'));
     }
 
     /**
@@ -55,28 +53,28 @@ class OrderController extends Controller
     {
         $package = Price_categaroy::all();
         $user = AllUser::all();
-        return  view('backend.order.add_custome_order',compact('package','user'));
+        return view('backend.order.add_custome_order', compact('package', 'user'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        if ($request->radio == 'new_user'){
+        if ($request->radio == 'new_user') {
 
             $request->validate([
-                    'name' => ['required', 'string', 'max:255'],
-                    'email' => ['required', 'string', 'email', 'max:255',],
-                    'password' => ['required', 'string', 'min:4', 'confirmed'],
-                    'phone' => ['required','unique:users'],
-                    'car_model' => 'required',
-                    'par_add' => 'required',
-                    'package_id' => 'required',
-             ]);
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255',],
+                'password' => ['required', 'string', 'min:4', 'confirmed'],
+                'phone' => ['required', 'unique:users'],
+                'car_model' => 'required',
+                'par_add' => 'required',
+                'package_id' => 'required',
+            ]);
 
             $package = Price_categaroy::find($request->package_id);
             $for_user_table = new User();
@@ -122,16 +120,14 @@ class OrderController extends Controller
             $order->order_status = 0;
             $order->payment_status = 'completed';
             $order->package_id = $request->package_id;
-            $order->transaction_id  =$payments->id;
+            $order->transaction_id = $payments->id;
             $order->save();
 
 
-            Toastr::success('New Order created Successfully','Success');
+            Toastr::success('New Order created Successfully', 'Success');
             return redirect()->route('admin.order.index');
 
-        }
-
-        elseif ($request->radio == 'old_user'){
+        } elseif ($request->radio == 'old_user') {
             $request->validate([
                 'package_id' => 'required',
                 'user_id' => 'required',
@@ -158,33 +154,22 @@ class OrderController extends Controller
             $payments->save();
 
 
-
             $order = new order();
             $order->user_id = $all_user->user_id;
             $order->order_status = 0;
             $order->payment_status = 'completed';
             $order->package_id = $request->package_id;
-            $order->transaction_id  =$payments->id;
+            $order->transaction_id = $payments->id;
             $order->save();
 
-            Toastr::success('New Order created Successfully','Success');
+            Toastr::success('New Order created Successfully', 'Success');
             return redirect()->route('admin.order.index');
 
 
+        } else {
+            Toastr::error('Please Select Something', 'Error');
+            return redirect()->back();
         }
-
-        else{
-            Toastr::error('Please Select Something','Error');
-             return redirect()->back();
-        }
-
-
-
-
-
-
-
-
 
 
     }
@@ -192,7 +177,7 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -203,7 +188,7 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -214,8 +199,8 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -226,12 +211,63 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+
+    public function order_search(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = order::where('payment_status', 'completed');
+            $query->orderBy('created_at', 'DESC');
+            return Datatables::of($query)
+                ->setTotalRecords($query->count())
+                ->addIndexColumn()
+                ->addColumn('name', function ($data) {
+                    if (isset($data->user)) {
+                        return '<a  href="' . url('admin/all_user/' . $data->user->id) . '" target="_blank">' . $data->user->name . '</a>';
+                    }
+
+                })->addColumn('package', function ($data) {
+                    return $data->package->name;
+                })->addColumn('total_amount', function ($data) {
+                    return $data->package->device_price + $data->package->monthly_charge;
+                })->addColumn('Payment_status', function ($data) {
+                    return $data->payment_status;
+                })->addColumn('status', function ($data) {
+                    $status = '';
+                    if ($data->order_status == 0)
+                        $status = '<span class="right badge badge-danger">Pending</span>';
+                    elseif ($data->order_status == 1)
+                        $status = '<span class="right badge badge-warning">Confirmed</span>';
+                    return $status;
+                })->addColumn('time', function ($data) {
+                    return date("d-M-y h:i A", strtotime($data->created_at));
+                })->addColumn('action', function ($data) {
+                    $action_button = $data->status !== 0 ? '<a class="btn btn-success btn-sm" href="#" onclick="complete_order('.$data->id.')">Confirm Order</a>' : '<a class="btn btn-info btn-sm disabled" href="">Confirmed</a>';
+                    return $action_button;
+                })
+                ->rawColumns(['name', 'package', 'total_amount', 'Payment_status', 'status', 'time', 'action'])
+                ->make(true);
+        }
+    }
+    
+    public function complete_order($id)
+    {
+        $order = order::find($id);
+        $order->order_status = 1;
+        $order->update();
+        
+        
+        $mobile[] = $order->user->phone;
+        send_sms('your order completed successfully',$mobile);
+        
+        return response()->json(['success' => 'Done']);
     }
 
 
