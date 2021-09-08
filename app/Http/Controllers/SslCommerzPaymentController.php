@@ -427,6 +427,7 @@ class SslCommerzPaymentController extends Controller
         $user = AllUser::find($user_id);
         $email = $user->email;
         $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->toDateString();
+        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::today()->lastOfMonth()->addDay(10))->toDateString();
         $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth()->toDateString();
         if ($user_last_active_payment_month >= $corrent_month) {
             $objects = json_decode(user_objects($email), true);
@@ -435,7 +436,7 @@ class SslCommerzPaymentController extends Controller
                 foreach ($objects as $objects_data) {
                     $all_object_array[] = $objects_data['imei'];
                 }
-                active_user_objects($all_object_array, $user_last_active_payment_month);
+                active_user_objects($all_object_array, $expaire_date);
             } else {
                 Toastr::error('No Device Found', 'error');
                 return redirect()->back();

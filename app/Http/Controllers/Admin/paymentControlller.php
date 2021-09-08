@@ -197,6 +197,8 @@ Safety GPS Tracker';
             $all_user = AllUser::find($payment->user_id);
             $all_user->next_payment_date = $payment->month_name;
             $all_user->update();
+        }elseif ($database_date < $corrent_date) {
+            $this->deactive_user_object_after_payment($payment->user_id);
         }
 
         $payment->delete();
@@ -211,9 +213,9 @@ Safety GPS Tracker';
     {
         $user = AllUser::find($user_id);
         $email = $user->email;
-        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->addDay(10)->toDateString();
-        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now())->lastOfMonth()->addDay(10)->toDateString();
-        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now())->lastOfMonth()->toDateString();
+        $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->toDateString();
+        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::today()->lastOfMonth()->addDay(10))->toDateString();
+        $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth()->toDateString();
         if ($user_last_active_payment_month >= $corrent_month) {
             $objects = json_decode(user_objects($email), true);
             if (isset($objects)) {
@@ -227,6 +229,23 @@ Safety GPS Tracker';
                 return redirect()->back();
             }
 
+        }
+    }
+
+    private function deactive_user_object_after_payment($user_id)
+    {
+        $user = AllUser::find($user_id);
+        $email = $user->email;
+        $objects = json_decode(user_objects($email), true);
+        if (isset($objects)) {
+            $all_object_array = array();
+            foreach ($objects as $objects_data) {
+                $all_object_array[] = $objects_data['imei'];
+            }
+            deactive_user_objects($all_object_array);
+        } else {
+            Toastr::error('No Device Found', 'error');
+            return redirect()->back();
         }
     }
 

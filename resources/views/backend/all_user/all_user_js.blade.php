@@ -431,9 +431,9 @@
                 }
             },
             error: function (response) {
-                if (response.responseJSON.errors.personal_sms_body) {
-                    toastr.error('Please Write a Valid Sms', 'warning');
-                }
+                // if (response.responseJSON.errors.personal_sms_body) {
+                //     toastr.error('Please Write a Valid Sms', 'warning');
+                // }
             }
         });
     }

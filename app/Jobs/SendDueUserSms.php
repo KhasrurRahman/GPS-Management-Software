@@ -45,6 +45,7 @@ class SendDueUserSms implements ShouldQueue
             }
             $total_due_money = $previous_due_history->count() * $user->monthly_bill;
             $message = "Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is $total_due_money tk from $number_of_due_first_month - $number_of_due_last_month. If you need any further information please contact our care number ( 01713546487)";
+            
             $number[] = $value->phone;
             send_sms($message, $number);
         }

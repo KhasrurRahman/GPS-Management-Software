@@ -147,8 +147,9 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../new" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="web-ide.project.structure" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -187,6 +188,9 @@
       <workItem from="1630903238428" duration="4667000" />
       <workItem from="1630983223339" duration="1212000" />
       <workItem from="1630984447761" duration="10000" />
+      <workItem from="1631067896446" duration="2000" />
+      <workItem from="1631067907883" duration="7780000" />
+      <workItem from="1631078320804" duration="710000" />
     </task>
     <servers />
   </component>

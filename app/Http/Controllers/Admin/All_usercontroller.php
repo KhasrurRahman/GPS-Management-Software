@@ -712,7 +712,7 @@ class All_usercontroller extends Controller
     public function send_manual_message()
     {
         Artisan::call('SendDueUserSms');
-        Artisan::call('queue:work');
+        Artisan::call('queue:work --stop-when-empty');
         return response()->json(['success' => 'Done']);
     }
     
