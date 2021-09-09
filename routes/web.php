@@ -28,6 +28,11 @@ Route::get('/clear_cache', function () {
     return 'Clear Cache';
 });
 
+
+Route::get('/foo', function () {
+Artisan::call('storage:link');
+});
+
 //frontend route
 Route::get('blank','Admin\AdminDashboardController@blank')->name('blank');
 Route::get('contact','HomeController2@contact')->name('contact');
