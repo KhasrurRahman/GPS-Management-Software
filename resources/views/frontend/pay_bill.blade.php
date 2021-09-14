@@ -12,10 +12,10 @@
                 <div class="col-lg-6 justify-content-center" style="margin-top: 7%;">
                             <form action="#" class="tm-form tm-login-form tm-form-bordered" style="background: #F8F8F8">
                                 @csrf
-                                <h4 class="text-center">Enter Your Registered Phone Number</h4>
+                                <h4 class="text-center">Enter Your Full Registered Mobile Number</h4>
                                 <div class="tm-form-inner">
                                     <div class="tm-form-field">
-                                        <label for="login-email">Phone Number*</label>
+                                        <label for="login-email">Mobile Number*</label>
                                         <input type="number" id="search" required="required" name="phone" autocomplete="off">
                                     </div>
                                     <div class="loader" style="display: none">
@@ -25,11 +25,11 @@
                                     <div class="alert alert-success text-center w-100" id="message" style="display: none"></div>
                                     <div class="alert alert-danger text-center w-100" id="message2" style="display: none"></div>
                                     <p id="show_bill" style="display: none;color: #0d8d2d;font-weight: bold">Your Mothly Bill: </p>
-                                    <p id="show_due_month" style="display: none;color: #0d8d2d;font-weight: bold">Number Of Due Months: </p>
+                                    <p id="show_due_month" style="display: none;color: #0d8d2d;font-weight: bold">Month of Due: </p>
                                     <p id="total_due" style="display: none;color: red;font-weight: bold">Your Total Due: </p>
 
                                     <div class="tm-form-field" id="payment_button" style="display: none">
-                                        <a href="" class="btn btn-primary btn-block" data-toggle="modal" data-target="#payment_status" style="color: white">Pay Bill<b></b></a>
+                                        <a href="" class="btn btn-primary btn-block" data-toggle="modal" data-target="#payment_status" style="color: white;font-weight: bold">PAY NOW<b></b></a>
                                     </div>
                                 </div>
                             </form>
@@ -50,26 +50,26 @@
         <form action="" method="post" id="form">
             @csrf
       <div class="modal-header">
-        <h5 class="modal-title" id="payment_statusLabel">Update Payment Status</h5>
+        <h5 class="modal-title" id="payment_statusLabel">After payment car will renew automatically</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Number Of Month</label>
+                    <label for="exampleInputPassword1">Enter number of month</label>
                     <input type="number" class="form-control" id="month" placeholder="Number Of Months" name="number_of_months" onkeyup="calculateAmount()" required min="1">
                     <input type="hidden" id="user_id" value="" name="user_id">
                     <input type="hidden" id="monthly_bill" value="">
                   </div>
                     <div class="form-group">
-                    <label for="exampleInputPassword1">payment Amount</label>
+                    <label for="exampleInputPassword1" style="font-weight: bold" >Total Payment Amount</label>
                     <input readonly type="number" class="form-control" id="amount" placeholder="Amount" name="amount" value="">
                 </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Pay</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
+        <button type="submit" class="btn btn-primary" style="font-weight: bold">PAY</button>
       </div>
          </form>
     </div>
@@ -120,7 +120,7 @@
                                 $('#total_due').hide();
                                 $('#message2').show();
                                 $('#payment_button').hide();
-                                $('#message2').text('No data Found');
+                                $('#message2').text('Enter full Number');
                             }
                         }
                        })

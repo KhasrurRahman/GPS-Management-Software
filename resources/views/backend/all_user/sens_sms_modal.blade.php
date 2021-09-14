@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-center" id="send_personalsmsLabel">Send Personal Sms</h5>
+                <h5 class="modal-title text-center" id="send_personalsmsLabel">Send SMS To User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -15,7 +15,7 @@
                             <input type="hidden" id="personal_sms_body_user_id">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="sms_body">Sms Body:</label>
+                                    <label for="sms_body">SMS TEXT:</label>
                                     <textarea class="form-control" name="sms_body" id="personal_sms_body"
                                               rows="3"></textarea>
                                     <span id="personal_sms_bodyError" class="text-red error_field"></span>

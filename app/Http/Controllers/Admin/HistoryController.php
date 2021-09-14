@@ -52,9 +52,9 @@ class HistoryController extends Controller
                 ->addColumn('bill_collected', function ($data) {
                     return $data->bill_collected->name;
                 })->addColumn('amount', function ($data) {
-                    return $data->amount;
+                    return $data->updated_amount;
                 })->addColumn('number_of_months', function ($data) {
-                    return $data->number_of_months.' Months';
+                    return $data->payment_for_month.' Months';
                 })->addColumn('user', function ($data) {
                     if ($data->user) {
                         return '<a  href="' . url('admin/all_user/' . $data->user_id) . '" target="_blank">' . $data->user->name . '</a>';

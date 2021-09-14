@@ -310,7 +310,7 @@
             reverseButtons: true
         }).then((result) => {
             if (result.value) {
-                toastr.success('Sms send Successful', 'Successful');
+                // toastr.success('Sms send Successful', 'Successful');
                 event.preventDefault();
                 $.ajax({
                     type: 'get',

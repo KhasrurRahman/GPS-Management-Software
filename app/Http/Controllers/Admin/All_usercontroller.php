@@ -711,8 +711,15 @@ class All_usercontroller extends Controller
     
     public function send_manual_message()
     {
-        Artisan::call('SendDueUserSms');
-        Artisan::call('queue:work --stop-when-empty');
+        $users = AllUser::where('payment_status',0)->where('order_status',0)->where('status',null)->get();
+        
+        foreach ($users as $key=>$data){
+            $previous_due_history = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get();
+            $total_due_money = $previous_due_history->count() * $data->monthly_bill;
+            $message = "Your monthly bill $total_due_money taka was due. Please pay the bill before expire your connection. bkash- 01713546487. Your ref. Id is- $data->id";
+            $number[] = $data->phone;
+            send_sms($message, $number);
+        }
         return response()->json(['success' => 'Done']);
     }
     

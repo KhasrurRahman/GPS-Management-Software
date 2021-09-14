@@ -42,9 +42,9 @@
                 <tbody>
                 <tfoot>
                 <tr>
-                    <th></th>
                     <th style="text-align:right;">Total:</th>
                     <th style="background: red;color: white"></th>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>

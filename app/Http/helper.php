@@ -7,7 +7,7 @@ function send_sms($message, $mobile_number)
 {
     $params = [
         "api_token" => 'ratin-788f2c73-802d-4d90-987e-4ae9ff0cc3e4',
-        "sid" => 'SAFETYGPSMASK',
+        "sid" => 'SAFETYGPSMASK_1',
         "msisdn" => $mobile_number,
         "sms" => $message,
         "batch_csms_id" => '2934fe343'
@@ -24,6 +24,7 @@ function send_sms($message, $mobile_number)
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($params), 'accept:application/json'));
     $response = curl_exec($ch);
     curl_close($ch);
+    print_r($response);
 }
 
 

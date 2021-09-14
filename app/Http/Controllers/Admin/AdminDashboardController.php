@@ -33,9 +33,9 @@ class AdminDashboardController extends Controller
         $total_collected_amount = payment_history::sum('payment_this_date');
         $total_device_sale = technician_device_stock::sum('quantity');
         $today_collected_bill = payment_history::whereDate('updated_at', Carbon::today())->sum('payment_this_date');
-        $total_due_user = AllUser::where('payment_status', 0)->get()->count();
+        $total_due_user = AllUser::where('payment_status', 0)->where('status',null)->get()->count();
         $total_device_sale_tk = Transaction_history::sum('sell_price');
-        $total_expair_user = AllUser::where('expair_status', 1)->get()->count();
+        $total_expair_user = AllUser::where('expair_status', 1)->where('status',null)->get()->count();
 
 
         $day_by_day_payment_history = payment_history::whereDate('created_at', '>', Carbon::now()->subDays(30))->get()

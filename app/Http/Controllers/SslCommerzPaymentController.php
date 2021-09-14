@@ -113,7 +113,7 @@ class SslCommerzPaymentController extends Controller
                 'transaction_id' => $post_data['tran_id'],
                 'currency' => $post_data['currency']
             ]);
-        
+
         $order = new order();
         $order->user_id = $user->id;
         $order->order_status = 0;
@@ -121,8 +121,8 @@ class SslCommerzPaymentController extends Controller
         $order->package_id = $id;
         $order->transaction_id = $post_data['tran_id'];
         $order->save();
-        
-        
+
+
         $sslc = new SslCommerzNotification();
         $payment_options = $sslc->makePayment($post_data, 'hosted');
 
@@ -222,12 +222,15 @@ class SslCommerzPaymentController extends Controller
         $amount = $request->input('amount');
         $currency = $request->input('currency');
         $order_type = $request->value_a;
+        $message = 'Your Bill Successfully paid';
 
         $sslc = new SslCommerzNotification();
 
         $order_detials = DB::table('payments')
             ->where('transaction_id', $tran_id)
             ->select('transaction_id', 'status', 'currency', 'amount', 'id', 'number_of_months', 'user_id')->first();
+
+        $mobile[] = User::find($order_detials->user_id)->all_user->phone;
 
         if ($order_detials->status == 'Pending') {
             $validation = $sslc->orderValidate($tran_id, $amount, $currency, $request->all());
@@ -249,6 +252,7 @@ class SslCommerzPaymentController extends Controller
                     Toastr::success('Payment status Successfully Updated', 'success');
                     return redirect()->route('user.user_dashboard');
                 } else {
+                    send_sms($message, $mobile);
                     $this->update_monthly_status($order_detials, $amount);
                     Toastr::success('Payment status Successfully Updated', 'success');
                     return redirect()->route('online_payment', $order_detials->user_id);
@@ -277,11 +281,12 @@ class SslCommerzPaymentController extends Controller
 
                 Toastr::success('Payment status Successfully Updated', 'success');
                 return redirect()->route('online_payment', $order_detials->user_id);
-            }else {
-                    $this->update_monthly_status($order_detials, $amount);
-                    Toastr::success('Payment status Successfully Updated', 'success');
-                    return redirect()->route('online_payment', $order_detials->user_id);
-                }
+            } else {
+                send_sms($message, $mobile);
+                $this->update_monthly_status($order_detials, $amount);
+                Toastr::success('Payment status Successfully Updated', 'success');
+                return redirect()->route('online_payment', $order_detials->user_id);
+            }
         } else {
             DB::table('payments')
                 ->where('transaction_id', $tran_id)
@@ -337,7 +342,6 @@ class SslCommerzPaymentController extends Controller
         $order_detials = DB::table('payments')
             ->where('transaction_id', $tran_id)
             ->select('transaction_id', 'status', 'currency', 'amount', 'id', 'number_of_months', 'user_id')->first();
-
         if ($order_detials->status == 'Pending') {
             $update_product = DB::table('payments')
                 ->where('transaction_id', $tran_id)
@@ -347,8 +351,7 @@ class SslCommerzPaymentController extends Controller
                 $order = order::where('transaction_id', $order_detials->id)->first();
                 $order->payment_status = 'Canceled';
                 $order->update();
-            }
-            if ($order_detials->number_of_months == null) {
+
                 Toastr::Error('Transaction is Cancel', 'Success');
                 return redirect()->route('online_payment', $order_detials->user_id);
             }
@@ -427,7 +430,7 @@ class SslCommerzPaymentController extends Controller
         $user = AllUser::find($user_id);
         $email = $user->email;
         $user_last_active_payment_month = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->toDateString();
-        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::today()->lastOfMonth()->addDay(10))->toDateString();
+        $expaire_date = Carbon::createFromFormat('Y-m-d H:i:s', $user->last_active_payment->first()->month_name)->lastOfMonth()->addDay(10)->toDateString();
         $corrent_month = Carbon::createFromFormat('Y-m-d', Carbon::now()->toDateString())->lastOfMonth()->toDateString();
         if ($user_last_active_payment_month >= $corrent_month) {
             $objects = json_decode(user_objects($email), true);

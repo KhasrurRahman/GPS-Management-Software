@@ -13,7 +13,7 @@ class SendDueUaserSmsCommend extends Command
      *
      * @var string
      */
-    protected $signature = 'SendDueUserSms';
+    protected $signature = 'SendReminderSMSCommend';
 
     /**
      * The console command description.
@@ -39,7 +39,7 @@ class SendDueUaserSmsCommend extends Command
      */
     public function handle()
     {
-        $users = AllUser::where('payment_status', 0)->where('expair_status', 0)->where('status',null)->chunk(50, function ($users) {
+        $users = AllUser::where('payment_status',0)->where('order_status',0)->where('expair_status',0)->where('status',null)->chunk(50, function ($users) {
            SendDueUserSms::dispatch($users);
         });
     }

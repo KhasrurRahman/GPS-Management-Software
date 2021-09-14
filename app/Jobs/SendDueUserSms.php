@@ -33,21 +33,39 @@ class SendDueUserSms implements ShouldQueue
      */
     public function handle()
     {
-        foreach ($this->data as $value) {
+        foreach ($this->data as $key=>$value) {
             $user = AllUser::findOrFail($value->id);
             $previous_due_history = payment_history::where('user_id', $user->id)->where('payment_status', 0)->get();
-            if ($previous_due_history->count() !== 0) {
-                $number_of_due_first_month = date("F", strtotime($previous_due_history->last()->month_name));
-                $number_of_due_last_month = date("F", strtotime($previous_due_history->first()->month_name));
-            } else {
-                $number_of_due_first_month = '  ';
-                $number_of_due_last_month = '  ';
-            }
             $total_due_money = $previous_due_history->count() * $user->monthly_bill;
-            $message = "Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is $total_due_money tk from $number_of_due_first_month - $number_of_due_last_month. If you need any further information please contact our care number ( 01713546487)";
-            
+            $message = "Your monthly bill $total_due_money taka was due. Please pay the bill before expire your connection. bkash- 01713546487. Your ref. Id is- $value->id";
             $number[] = $value->phone;
-            send_sms($message, $number);
+            $this->send_sms($message, $number);
+            print_r('----->>>'.$key++);
         }
+    }
+
+
+    private function send_sms($message, $mobile_number)
+    {
+        $params = [
+            "api_token" => 'ratin-788f2c73-802d-4d90-987e-4ae9ff0cc3e4',
+            "sid" => 'SAFETYGPSMASK_1',
+            "msisdn" => $mobile_number,
+            "sms" => $message,
+            "batch_csms_id" => '2934fe343'
+        ];
+        $url = trim('https://smsplus.sslwireless.com', '/') . "/api/v3/send-sms/bulk";
+        $params = json_encode($params);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Content-Length: ' . strlen($params), 'accept:application/json'));
+        $response = curl_exec($ch);
+        curl_close($ch);
+        print_r($response.'--------------------');
     }
 }
