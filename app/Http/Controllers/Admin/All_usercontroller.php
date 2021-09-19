@@ -347,7 +347,7 @@ class All_usercontroller extends Controller
         $total_due = $previous_due_history->count() * $user->monthly_bil;
         $mobile[] = $user->phone;
         $sms = "Your Connection has been expired. Please pay the due bill to active your connection. Your total due bill is $total_due tk from $number_of_due_first_month - $number_of_due_last_month. If you need any further information please contact our care number ( 01713546487)";
-        send_sms($sms,$mobile);
+        send_sms($sms, $mobile);
 
         return response()->json(['success' => 'Done']);
     }
@@ -365,10 +365,10 @@ class All_usercontroller extends Controller
         $user = AllUser::findOrFail($id);
         $user->expair_status = 0;
         $user->update();
-        
+
         $mobile[] = $user->phone;
         $sms = "Thank You for Your Payment,Your Connection is Now Active";
-        send_sms($sms,$mobile);
+        send_sms($sms, $mobile);
 
         Toastr::success('Activated Successfully :)', 'Success');
         return redirect()->back();
@@ -708,21 +708,20 @@ class All_usercontroller extends Controller
         active_user_objects($request->active_object, $request->expaire_date);
         return response()->json(['success' => 'Done']);
     }
-    
+
     public function send_manual_message()
     {
-        $users = AllUser::where('payment_status',0)->where('order_status',0)->where('status',null)->get();
-        
-        foreach ($users as $key=>$data){
+        $users = AllUser::where('payment_status', 0)->where('order_status', 0)->where('status', null)->get();
+
+        foreach ($users as $key => $data) {
             $previous_due_history = payment_history::where('user_id', $data->id)->where('payment_status', 0)->get();
             $total_due_money = $previous_due_history->count() * $data->monthly_bill;
             $message = "Your monthly bill $total_due_money taka was due. Please pay the bill before expire your connection. bkash- 01713546487. Your ref. Id is- $data->id";
-            $number[] = $data->phone;
+            $number = [$data->phone];
             send_sms($message, $number);
         }
         return response()->json(['success' => 'Done']);
     }
-    
-    
-    
+
+
 }
